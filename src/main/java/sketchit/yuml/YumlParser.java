@@ -1,0 +1,146 @@
+package sketchit.yuml;
+
+import sketchit.domain.ClassElement;
+import sketchit.domain.Element;
+import sketchit.domain.Id;
+import sketchit.domain.NoteElement;
+import sketchit.domain.Relationship;
+import sketchit.util.Strings;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ *
+ */
+public class YumlParser {
+
+    public interface Handler {
+        Id emit(Element<?> element);
+        Id emit(Relationship relationship);
+    }
+
+
+    public static final Pattern EXPR_LEFTSIDE = Pattern.compile("\\[([^\\]]+)\\]" // left side element
+            + "([^\\[]+)?" // relationship
+    );
+
+    public void parseExpression(CharSequence expression, Handler handler) {
+        Id leftId = null;
+        String relationExpr = null;
+
+        Matcher matcher = EXPR_LEFTSIDE.matcher(expression);
+        while(matcher.find()) {
+            Element element = parseElement(matcher.group(1));
+            Id rightId = handler.emit(element);
+
+            if(relationExpr!=null) {
+                handler.emit(parseRelation(leftId, rightId, relationExpr));
+            }
+            relationExpr = matcher.group(2);
+            leftId = rightId;
+        }
+    }
+
+    public static final Pattern META = Pattern.compile("(\\{([^\\}]+)\\})");
+    public static final Pattern PARTS = Pattern.compile("\\|");
+    public static final Pattern VALUES = Pattern.compile(";");
+    public static final Pattern NOTE = Pattern.compile("^[\\s]*note\\:(.*)");
+
+    public Element parseElement(CharSequence content) {
+        Map<String,String> styles = new HashMap<String, String>();
+        Matcher matcher = META.matcher(content);
+        if(matcher.find()) {
+            parseStyles(styles, matcher.group(2));
+            content = matcher.replaceFirst("");
+        }
+
+        Matcher noteMatcher = NOTE.matcher(content);
+        if(noteMatcher.matches()) {
+            return new NoteElement(noteMatcher.group(1).trim()).usingStyles(styles);
+        }
+        else {
+            String[] parts = PARTS.split(content);
+            List<String> attributes = splitValuesOrEmpty(parts, 1);
+            List<String> methods = splitValuesOrEmpty(parts, 2);
+            return new ClassElement(parts[0], attributes, methods).usingStyles(styles);
+        }
+    }
+
+    public Relationship parseRelation(Id leftId, Id rightId, String relationExpr) {
+        Relationship relationship = new Relationship(leftId, rightId);
+
+        String[] leftAndRight;
+        if(relationExpr.contains("-.-")) {
+            relationship.usingLineStyle(Relationship.LineStyle.Dashed);
+            leftAndRight = relationExpr.split(Pattern.quote("-.-"));
+        }
+        else {
+            relationship.usingLineStyle(Relationship.LineStyle.Solid);
+            leftAndRight = relationExpr.split("\\-");
+        }
+
+        if(leftAndRight.length>1) {
+            parseRelationSide(relationship.leftEndPoint(), leftAndRight[0], false);
+            parseRelationSide(relationship.rightEndPoint(), leftAndRight[1], true);
+        }
+
+        return relationship;
+    }
+
+    private static void parseRelationSide(Relationship.EndPoint endPoint, String expr, boolean flipText) {
+        if(flipText)
+            expr = Strings.flipText(expr);
+
+        int offset = 1;
+        if(expr.startsWith("<>")) {
+            offset = 2;
+            endPoint.usingDecoration(Relationship.Decoration.Aggregation);
+        }
+        else if(expr.startsWith("++")) {
+            offset = 2;
+            endPoint.usingDecoration(Relationship.Decoration.Composition);
+        }
+        else if(expr.startsWith("+")) {
+            endPoint.usingDecoration(Relationship.Decoration.Aggregation);
+        }
+        else if(expr.startsWith("<") || expr.startsWith(">")) {
+            endPoint.usingDecoration(Relationship.Decoration.Arrow);
+        }
+        else if(expr.startsWith("^")) {
+            endPoint.usingDecoration(Relationship.Decoration.Inheritance);
+        }
+        else {
+            offset = 0;
+        }
+
+        expr = expr.substring(offset);
+        if(flipText)
+            expr = Strings.flipText(expr);
+        endPoint.usingLabel(expr);
+    }
+
+    private static  void parseStyles(Map<String, String> styles, String inlinedStyles) {
+        String[] keyValues = inlinedStyles.split(",");
+        for(String keyValue : keyValues) {
+            String[] kv = keyValue.split(":");
+            if(kv.length>1)
+               styles.put(kv[0].trim(), kv[1].trim());
+            else
+                styles.put(keyValue.trim(), "");
+        }
+    }
+
+    private static List<String> splitValuesOrEmpty(String[] strings, int index) {
+        if(index<strings.length) {
+            String[] values = VALUES.split(strings[index]);
+            return Arrays.asList(values);
+        }
+        return Collections.emptyList();
+    }
+}
