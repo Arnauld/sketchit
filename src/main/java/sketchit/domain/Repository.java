@@ -41,4 +41,8 @@ public class Repository {
     public Iterable<Element> elements() {
         return elements;
     }
+
+    public Iterable<Relationship> relations() {
+        return relationships;
+    }
 }

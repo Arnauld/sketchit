@@ -27,3 +27,12 @@ Syntax for Class diagram is based on [yUML](http://yuml.me/diagram/class/draw) s
 
     [Customer]<>1->*[Order],
     [Customer]-[note: Aggregate Root{bg:cornsilk}]
+
+
+# Libraries
+
+* [Graphviz](http://www.graphviz.org/)
+* [Inkscape](http://inkscape.org/)
+  * http://wiki.inkscape.org/wiki/index.php/MacOS_X
+* SVG
+  * Drop Shadow: http://xn--dahlstrm-t4a.net/svg/filters/arrow-with-dropshadow-lighter.svg
