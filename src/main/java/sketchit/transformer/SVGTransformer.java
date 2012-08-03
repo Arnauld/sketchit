@@ -8,6 +8,7 @@ import sketchit.util.Xml;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,9 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.NumberFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * @author <a href="http://twitter.com/aloyer">@aloyer</a>
@@ -30,6 +33,10 @@ public class SVGTransformer {
 
     private Random random = new Random();
     private Xml xml = new Xml();
+
+    // TODO retrieve me from a ... conf or meta data
+    private String defaultColor = "lightgrey";
+
 
     public void transform(InputStream inputStream, OutputStream outputStream)
             throws
@@ -42,11 +49,43 @@ public class SVGTransformer {
         Document document = xml.newDocument(inputStream);
 
         increaseSVGSize(document);
-        createDefs(document);
+
+        Element defs = createDefs(document);
+        appendShadowDef(document, defs);
+        appendGradientDefs(document, defs, extractFillColors(document));
         applyGradientExceptOnEdge(document);
+
         scruffit(document);
 
         xml.serializeUTF8(document, outputStream);
+    }
+
+    private Set<String> extractFillColors(Document document) throws XPathExpressionException {
+        Set<String> colors = new HashSet<String>();
+
+        Element root = document.getDocumentElement();
+        XPathExpression xPathExpression = xml.compileXPath("descendant::*[@fill]/@fill");
+        NodeList nodeList = (NodeList)xPathExpression.evaluate(root, XPathConstants.NODESET);
+        for(int i=0;i<nodeList.getLength();i++) {
+            Node node = nodeList.item(i);
+            colors.add(node.getNodeValue());
+        }
+        return colors;
+    }
+
+    private void appendShadowDef(Document document, Element defs) {
+        defs.appendChild(createShadowFilter(document));
+    }
+
+    private void appendGradientDefs(Document document, Element defs, Set<String> colors) {
+        // default
+        if(!colors.contains(defaultColor)) {
+            defs.appendChild(createGradientForNode(document, defaultColor));
+        }
+        for(String color : colors) {
+            if(!color.equals("none"))
+                defs.appendChild(createGradientForNode(document, color));
+        }
     }
 
     private void applyGradientExceptOnEdge(Document document) throws XPathExpressionException {
@@ -54,37 +93,41 @@ public class SVGTransformer {
 
         // --- replace fill by a nice looking... gradient
 
-        XPathExpression xPathExpression = xml.compileXPath("descendant::*[@fill and parent::g[@class != 'edge']]");
+        XPathExpression xPathExpression = xml.compileXPath("descendant::polygon[@fill and parent::g[@class != 'edge']]");
         NodeList evaluate = (NodeList)xPathExpression.evaluate(root, XPathConstants.NODESET);
 
-        // skip the first node
+        // skip the first node which acts as a bounding box
         for(int i=1;i<evaluate.getLength();i++) {
             Element element = (Element)evaluate.item(i);
-            element.setAttribute("style","fill:url(#GradientNode)");
+            String color = element.getAttribute("fill");
+            if(color.equals("none")) {
+                color = defaultColor;
+            }
+            element.setAttribute("style","fill:url(#GradientNode-" + color + ")");
             element.setAttribute("filter","url(#FilterShadow)");
             element.removeAttribute("fill");
         }
 
         // --- replace fill:none by fill:white
-        xPathExpression = xml.compileXPath("descendant::*[@fill='none']");
-        evaluate = (NodeList)xPathExpression.evaluate(root, XPathConstants.NODESET);
-        for(int i=1;i<evaluate.getLength();i++) {
-            Element element = (Element)evaluate.item(i);
-            element.setAttribute("fill", "white");
-        }
+//        xPathExpression = xml.compileXPath("descendant::*[@fill='none']");
+//        evaluate = (NodeList)xPathExpression.evaluate(root, XPathConstants.NODESET);
+//        for(int i=1;i<evaluate.getLength();i++) {
+//            Element element = (Element)evaluate.item(i);
+//            element.setAttribute("fill", "white");
+//        }
     }
 
-    private void createDefs(Document document) {
+    private Element createDefs(Document document) {
         Element defs = document.createElement("defs");
-        defs.appendChild(createGradientForNode(document));
-        defs.appendChild(createShadowFilter(document));
-
         Element root = document.getDocumentElement();
         root.insertBefore(defs, root.getFirstChild());
+        return defs;
     }
 
     private void increaseSVGSize(Document document) {
         Element root = document.getDocumentElement();
+
+        // TODO: fix the first polygon size that acts as a bounding box too
 
         String[] viewCoords = root.getAttribute("viewBox").split(" ");
         double x1 = Double.parseDouble(viewCoords[0]);
@@ -104,18 +147,6 @@ public class SVGTransformer {
     }
 
     private Element createShadowFilter(Document document) {
-//        <filter id="dropshadow" height="130%">
-//          <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-//          <feOffset dx="2" dy="2" result="offsetblur"/>
-//          <feComponentTransfer>
-//            <feFuncA type="linear" slope="0.2"/>
-//          </feComponentTransfer>
-//          <feMerge>
-//            <feMergeNode/>
-//            <feMergeNode in="SourceGraphic"/>
-//          </feMerge>
-//        </filter>
-
         Element feComponentTransfer = e(document, "feComponentTransfer");
         feComponentTransfer.appendChild(e(document, "feFuncA", a("type", "linear"), a("slope", "0.2")));
 
@@ -132,17 +163,20 @@ public class SVGTransformer {
         return filter;
     }
 
-    private Element createGradientForNode(Document document) {
+    //private String stopColor1 = "#FFE200";
+    //private String stopColor2 = "#FFEF73";
+
+    private Element createGradientForNode(Document document, String color) {
         Element stop1 = document.createElement("stop");
         stop1.setAttribute("offset", "10%");
-        stop1.setAttribute("stop-color", "#FFE200");
+        stop1.setAttribute("stop-color", "white");
 
         Element stop2 = document.createElement("stop");
         stop2.setAttribute("offset", "90%");
-        stop2.setAttribute("stop-color", "#FFEF73");
+        stop2.setAttribute("stop-color", color);
 
         Element linearGradientNode = document.createElement("linearGradient");
-        linearGradientNode.setAttribute("id", "GradientNode");
+        linearGradientNode.setAttribute("id", "GradientNode-" + color);
         linearGradientNode.setAttribute("x1", "0%");
         linearGradientNode.setAttribute("y1", "0%");
         linearGradientNode.setAttribute("x2", "100%");
@@ -186,8 +220,11 @@ public class SVGTransformer {
 
             double distance;
             while((distance = pn0.lengthTo(pn1))>20) {
+                double radius = distance * 0.02;
+                if(radius>5)
+                    radius = 5;
                 Point2D interm = pn0.split(pn1, distance*random.nextDouble()).angularMove(
-                        distance * 0.02, 2 * Math.PI * random.nextDouble());
+                        radius, 2 * Math.PI * random.nextDouble());
                 modified.append(interm.asString()).append(' ');
                 pn0 = interm;
             }

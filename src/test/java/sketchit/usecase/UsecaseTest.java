@@ -14,7 +14,6 @@ import sketchit.yuml.RepositoryYumlParserHandlerAdapter;
 import sketchit.yuml.YumlParser;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -61,9 +59,16 @@ public class UsecaseTest {
             writer.write("  <pre>\n");
             writer.write(escapeHtml4(resourceContent(resourcePath)));
             writer.write("  </pre>\n");
-            writer.write("  <p>\n");
-            writer.write("<img src=\"" + resourcePath + "-" + o[1]  + ".png\" />");
-            writer.write("  </p>\n");
+            writer.write("  <table border=\"0\">\n");
+            writer.write("    <tr>\n");
+            writer.write("      <td>\n");
+            writer.write("        <img src=\"" + resourcePath + "-" + o[1]  + ".png\" />\n");
+            writer.write("      </td>\n");
+            writer.write("      <td>\n");
+            writer.write("        <img src=\"" + resourcePath + "-" + o[1]  + ".svg\" />\n");
+            writer.write("      </td>\n");
+            writer.write("    </tr>");
+            writer.write("  </table>");
         }
         writer.write("</body>\n");
         writer.write("</html>\n");
@@ -74,6 +79,8 @@ public class UsecaseTest {
     public static List<Object[]> values () {
         return Arrays.asList(
                 o("case00", "TD", "Class"),
+                o("case00a1", "TD", "Note & Background in hexa"),
+                o("case00a2", "TD", "Note & Background using html named color"),
                 o("case00b", "LR", "Association"),
                 o("case00d", "LR", "Dashed"),
                 o("case00e", "LR", "Dotted"),
@@ -83,10 +90,11 @@ public class UsecaseTest {
                 o("case00i", "LR", "Composition"),
                 o("case00j", "TD", "Inheritance"),
                 o("case01", "TD", "Long note text"),
+                o("case02a", "TD", "Class with attributes"),
                 o("case02", "TD", "Class with Details (TD)"),
+                o("case02", "DT", "Class with Details (DT)"),
                 o("case02", "LR", "Class with Details (LR)"),
                 o("case02", "RL", "Class with Details (RL)"),
-                o("case02", "DT", "Class with Details (DT)"),
                 o("case03", "TD", "Stereotype"),
                 o("case03b", "TD", "Stereotypes"),
                 o("case04", "LR", "Dependencies (Stereotype dans la relation)"),
@@ -149,6 +157,7 @@ public class UsecaseTest {
         File svgFile = new File(getOutputDir(), resourcePath + "-" + direction + "." + ext);
         OutputStream transformOut = new FileOutputStream(svgFile);
         try {
+            System.out.println("UsecaseTest.process\n " + new String(dotOut.toByteArray(), "utf8"));
             SVGTransformer transformer = new SVGTransformer();
             transformer.transform(new ByteArrayInputStream(dotOut.toByteArray()), transformOut);
         }

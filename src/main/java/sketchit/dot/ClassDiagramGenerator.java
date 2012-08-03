@@ -1,5 +1,6 @@
 package sketchit.dot;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.text.WordUtils.wrap;
 
 import sketchit.domain.ClassElement;
@@ -9,7 +10,6 @@ import sketchit.domain.Relationship;
 import sketchit.domain.Repository;
 import sketchit.util.StreamWriter;
 
-import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -21,11 +21,15 @@ import java.util.List;
 public class ClassDiagramGenerator implements StreamWriter {
 
     private final Repository repository;
+
+    // ---
+
     private String direction = "TD";
     private String fontName = "jd";
     private int edgeLabelDistance = 2;
     private int edgeFontSize = 8;
     private int nodeFontSize = 12;
+    private int nodeStereotypeFontSize = 10;
     private int noteFontSize = 10;
     private int noteWrapLength = 30;
 
@@ -159,6 +163,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("          height = 0.50");
         out.println("        fontsize = " + noteFontSize);
         out.println("          margin = 0.20,0.05");
+        out.println("      constraint = false");
         out.println("    ]");
     }
 
@@ -168,7 +173,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("    N" + element.getId().asInt() + " [");
         out.println("            label = \"" + formatClassElementLabel(element) + "\"");
         out.println("            style = \"filled\"");
-        out.println("        fillcolor = \"yellow\"");
+        out.println("        fillcolor = \"" + defaultString(element.getBackground(), "lightgrey") + "\"");
         out.println("         fontname = \"" + fontName + "\"");
         out.println("    ]");
     }
@@ -179,8 +184,16 @@ public class ClassDiagramGenerator implements StreamWriter {
             formatted.append('{');
         }
 
-        for(String stereotype : element.getStereotypes()) {
-            formatted.append(ensureTextIsValid(stereotype)).append("\\n");
+        List<String> stereotypes = element.getStereotypes();
+        if(!stereotypes.isEmpty()) {
+            // TODO investigate HTML label...
+            //formatted.append("<FONT POINT-SIZE=\"").append(nodeStereotypeFontSize).append("\">");
+            //formatted.append("<I>");
+            for(String stereotype : stereotypes) {
+                formatted.append(ensureTextIsValid(stereotype)).append("\\n");
+            }
+            //formatted.append("</I>");
+            //formatted.append("</FONT>");
         }
         formatted.append(ensureTextIsValid(element.getClassName()));
 
@@ -214,7 +227,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("    N" + element.getId().asInt() + " [");
         out.println("              label = \"" + formatNoteElementLabel(element) + "\"");
         out.println("              style = \"filled\"");
-        out.println("          fillcolor = \"yellow\"");
+        out.println("          fillcolor = \"" + defaultString(element.getBackground(), "yellow") + "\"");
         out.println("           fontname = \"" + fontName + "\"");
         out.println("    ]");
     }
