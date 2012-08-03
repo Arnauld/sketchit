@@ -17,6 +17,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- lib versions -->
+    <batik.version>1.7</batik.version>
     <hamcrest.version>1.2</hamcrest.version>
     <slf4j.version>1.6.4</slf4j.version>
     <fest-assert.version>2.0M5</fest-assert.version>
@@ -37,6 +38,27 @@
   <!-- ************************************************ -->
   <dependencies>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~Batik~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-rasterizer</artifactId>
+      <version>${batik.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-transcoder</artifactId>
+      <version>${batik.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-codec</artifactId>
+      <version>${batik.version}</version>
+    </dependency>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~~~~~~~~~~~~~Commons~~~~~~~~~~~~~~~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependency>
@@ -49,7 +71,6 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.3</version>
-      <scope>test</scope>
     </dependency>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -82,6 +103,7 @@
       <groupId>junit</groupId>
       <artifactId>junit-dep</artifactId>
       <optional>true</optional>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -146,6 +168,16 @@
   <!-- *~~~~~~~~~~~~~~~~~REPORTING~~~~~~~~~~~~~~~~~~~~* -->
   <!-- ************************************************ -->
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+
     <plugins>
 
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

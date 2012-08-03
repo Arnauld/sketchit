@@ -4,25 +4,12 @@ import static java.util.Arrays.asList;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.junit.Test;
-import java.util.Arrays;
 
 /**
  *
  *
  */
 public class ClassElementTest {
-
-    @Test
-    public void discardStereotype_none() {
-        assertThat(ClassElement.discardStereotypes("Customer")).isEqualTo("Customer");
-    }
-
-    @Test
-    public void discardStereotype_single() {
-        assertThat(ClassElement.discardStereotypes("<<Entity>>Customer")).isEqualTo("Customer");
-        assertThat(ClassElement.discardStereotypes("<<Entity>> Customer")).isEqualTo("Customer");
-        assertThat(ClassElement.discardStereotypes("<<Entity>>\nCustomer")).isEqualTo("Customer");
-    }
 
     @Test
     public void completeWith_sameClass_sameAttributes () {

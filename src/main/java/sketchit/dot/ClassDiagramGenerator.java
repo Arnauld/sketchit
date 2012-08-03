@@ -1,5 +1,7 @@
 package sketchit.dot;
 
+import static org.apache.commons.lang3.text.WordUtils.wrap;
+
 import sketchit.domain.ClassElement;
 import sketchit.domain.Element;
 import sketchit.domain.NoteElement;
@@ -7,6 +9,7 @@ import sketchit.domain.Relationship;
 import sketchit.domain.Repository;
 import sketchit.util.StreamWriter;
 
+import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -18,7 +21,13 @@ import java.util.List;
 public class ClassDiagramGenerator implements StreamWriter {
 
     private final Repository repository;
-    private String rankDir = "LR";
+    private String direction = "TD";
+    private String fontName = "jd";
+    private int edgeLabelDistance = 2;
+    private int edgeFontSize = 8;
+    private int nodeFontSize = 12;
+    private int noteFontSize = 10;
+    private int noteWrapLength = 30;
 
     public ClassDiagramGenerator(Repository repository) {
         this.repository = repository;
@@ -29,7 +38,12 @@ public class ClassDiagramGenerator implements StreamWriter {
      * @return this
      */
     public ClassDiagramGenerator usingRankDir(String rankDir) {
-        this.rankDir = rankDir;
+        this.direction = rankDir;
+        return this;
+    }
+
+    public ClassDiagramGenerator usingFontName(String fontName) {
+        this.fontName = fontName;
         return this;
     }
 
@@ -48,7 +62,7 @@ public class ClassDiagramGenerator implements StreamWriter {
     private void generateHeader(PrintStream out) {
         out.println("digraph G {");
         out.println("    ranksep = 1");
-        out.println("    rankdir = " + rankDir);
+        out.println("    rankdir = " + direction);
     }
 
     private void generateFooter(PrintStream out) {
@@ -83,9 +97,9 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("           arrowhead = \"" + decoration2Dot(relationship.rightEndPoint().getDecoration()) + "\"");
         out.println("           taillabel = \"" + formatLabel(relationship.leftEndPoint().getLabel()) + "\"");
         out.println("           headlabel = \"" + formatLabel(relationship.rightEndPoint().getLabel()) + "\"");
-        out.println("       labeldistance = 2");
-        out.println("            fontsize = 10");
-        out.println("            fontname = \"j.d.\"");
+        out.println("       labeldistance = " + edgeLabelDistance);
+        out.println("            fontsize = " + edgeFontSize);
+        out.println("            fontname = \""+ fontName + "\"");
         out.println("    ]");
         out.println("    N" + id2Int(relationship.leftEndPoint()) + " -> N" + id2Int(relationship.rightEndPoint()));
     }
@@ -118,6 +132,10 @@ public class ClassDiagramGenerator implements StreamWriter {
         switch (lineStyle) {
             case Dashed:
                 return "dashed";
+            case Dotted:
+                return "dotted";
+            case Bold:
+                return "bold";
             case Solid:
             default:
                 return "solid";
@@ -130,7 +148,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("    node [");
         out.println("           shape = \"record\"");
         out.println("          height = 0.50");
-        out.println("        fontsize = 10");
+        out.println("        fontsize = " + nodeFontSize);
         out.println("          margin = 0.20,0.05");
         out.println("    ]");
     }
@@ -139,7 +157,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("    node [");
         out.println("           shape = \"note\"");
         out.println("          height = 0.50");
-        out.println("        fontsize = 10");
+        out.println("        fontsize = " + noteFontSize);
         out.println("          margin = 0.20,0.05");
         out.println("    ]");
     }
@@ -151,18 +169,27 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("            label = \"" + formatClassElementLabel(element) + "\"");
         out.println("            style = \"filled\"");
         out.println("        fillcolor = \"yellow\"");
-        out.println("         fontname = \"j.d.\"");
+        out.println("         fontname = \"" + fontName + "\"");
         out.println("    ]");
     }
 
     private String formatClassElementLabel(ClassElement element) {
         StringBuilder formatted = new StringBuilder();
-        // TODO
-        // element.getStereotypes()
-        formatted.append(element.getClassName());
+        if(direction.equals("TD") || direction.equals("DT")) {
+            formatted.append('{');
+        }
+
+        for(String stereotype : element.getStereotypes()) {
+            formatted.append(ensureTextIsValid(stereotype)).append("\\n");
+        }
+        formatted.append(ensureTextIsValid(element.getClassName()));
 
         formatClassFeatures(formatted, element.getAttributes());
         formatClassFeatures(formatted, element.getMethods());
+
+        if(direction.equals("TD") || direction.equals("DT")) {
+            formatted.append('}');
+        }
 
         return formatted.toString();
     }
@@ -178,7 +205,7 @@ public class ClassDiagramGenerator implements StreamWriter {
                 else {
                     formatted.append("\\n");
                 }
-                formatted.append(feature);
+                formatted.append(ensureTextIsValid(feature));
             }
         }
     }
@@ -188,12 +215,17 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("              label = \"" + formatNoteElementLabel(element) + "\"");
         out.println("              style = \"filled\"");
         out.println("          fillcolor = \"yellow\"");
-        out.println("           fontname = \"j.d.\"");
+        out.println("           fontname = \"" + fontName + "\"");
         out.println("    ]");
     }
 
     private String formatNoteElementLabel(NoteElement element) {
-        return element.getText().toString();
+        String noteText = ensureTextIsValid(element.getText().toString());
+        return wrap(noteText, noteWrapLength, "\\n", false);
+    }
+
+    private static String ensureTextIsValid(String text) {
+        return text.replaceAll("([<>])", "\\\\$1");
     }
 
 }

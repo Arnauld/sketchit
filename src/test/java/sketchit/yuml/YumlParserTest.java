@@ -3,6 +3,14 @@ package sketchit.yuml;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static sketchit.domain.Relationship.Decoration.Aggregation;
+import static sketchit.domain.Relationship.Decoration.Arrow;
+import static sketchit.domain.Relationship.Decoration.Composition;
+import static sketchit.domain.Relationship.Decoration.Inheritance;
+import static sketchit.domain.Relationship.Decoration.None;
+import static sketchit.domain.Relationship.LineStyle.Dashed;
+import static sketchit.domain.Relationship.LineStyle.Dotted;
+import static sketchit.domain.Relationship.LineStyle.Solid;
 
 import sketchit.domain.ClassElement;
 import sketchit.domain.Element;
@@ -24,7 +32,6 @@ public class YumlParserTest {
 
     private static final Id ID_1 = new Id(17);
     private static final Id ID_2 = new Id(11);
-
 
     private YumlParser parser;
 
@@ -162,9 +169,9 @@ public class YumlParserTest {
 
         assertThat(leftEndPoint.getLabel()).isNull();
         assertThat(righttEndPoint.getLabel()).isNull();
-        assertThat(relationship.getLineStyle()).isEqualTo(Relationship.LineStyle.Solid);
-        assertThat(leftEndPoint.getDecoration()).isEqualTo(Relationship.Decoration.None);
-        assertThat(righttEndPoint.getDecoration()).isEqualTo(Relationship.Decoration.None);
+        assertThat(relationship.getLineStyle()).isEqualTo(Solid);
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(None);
+        assertThat(righttEndPoint.getDecoration()).isEqualTo(None);
     }
 
     @Test
@@ -177,9 +184,24 @@ public class YumlParserTest {
 
         assertThat(leftEndPoint.getLabel()).isNull();
         assertThat(righttEndPoint.getLabel()).isNull();
-        assertThat(relationship.getLineStyle()).isEqualTo(Relationship.LineStyle.Dashed);
-        assertThat(leftEndPoint.getDecoration()).isEqualTo(Relationship.Decoration.None);
-        assertThat(righttEndPoint.getDecoration()).isEqualTo(Relationship.Decoration.None);
+        assertThat(relationship.getLineStyle()).isEqualTo(Dashed);
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(None);
+        assertThat(righttEndPoint.getDecoration()).isEqualTo(None);
+    }
+
+    @Test
+    public void parseRelation_basicInheritance() {
+        Relationship relationship = parser.parseRelation(ID_1, ID_2, "^");
+        assertThat(relationship).isNotNull();
+
+        Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
+        Relationship.EndPoint righttEndPoint = relationship.rightEndPoint();
+
+        assertThat(leftEndPoint.getLabel()).isNullOrEmpty();
+        assertThat(righttEndPoint.getLabel()).isNullOrEmpty();
+        assertThat(relationship.getLineStyle()).isEqualTo(Solid);
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(Inheritance);
+        assertThat(righttEndPoint.getDecoration()).isEqualTo(None);
     }
 
     @Test
@@ -190,11 +212,75 @@ public class YumlParserTest {
         Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
         Relationship.EndPoint rightEndPoint = relationship.rightEndPoint();
 
-        assertThat(relationship.getLineStyle()).isEqualTo(Relationship.LineStyle.Solid);
+        assertThat(relationship.getLineStyle()).isEqualTo(Solid);
         assertThat(leftEndPoint.getLabel()).isNullOrEmpty();
-        assertThat(leftEndPoint.getDecoration()).isEqualTo(Relationship.Decoration.Composition);
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(Composition);
         assertThat(rightEndPoint.getLabel()).isEqualTo("0..*");
-        assertThat(rightEndPoint.getDecoration()).isEqualTo(Relationship.Decoration.Arrow);
+        assertThat(rightEndPoint.getDecoration()).isEqualTo(Arrow);
+    }
+
+    @Test
+    public void parseRelation_rightLabelAfterArrow() {
+        Relationship relationship = parser.parseRelation(ID_1, ID_2, "<>1->*");
+        assertThat(relationship).isNotNull();
+
+        assertThat(relationship.getLineStyle()).isEqualTo(Solid);
+
+        Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
+        assertThat(leftEndPoint.getLabel()).isEqualTo("1");
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(Aggregation);
+
+        Relationship.EndPoint rightEndPoint = relationship.rightEndPoint();
+        assertThat(rightEndPoint.getLabel()).isEqualTo("*");
+        assertThat(rightEndPoint.getDecoration()).isEqualTo(Arrow);
+    }
+
+    @Test
+    public void parseRelation_textAndSpace() {
+        Relationship relationship = parser.parseRelation(ID_1, ID_2, "uses -.->");
+        assertThat(relationship).isNotNull();
+
+        assertThat(relationship.getLineStyle()).isEqualTo(Dashed);
+
+        Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
+        assertThat(leftEndPoint.getLabel()).isEqualTo("uses");
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(None);
+
+        Relationship.EndPoint rightEndPoint = relationship.rightEndPoint();
+        assertThat(rightEndPoint.getLabel()).isEqualTo("");
+        assertThat(rightEndPoint.getDecoration()).isEqualTo(Arrow);
+    }
+
+    @Test
+    public void parseRelation_dotted() {
+        Relationship relationship = parser.parseRelation(ID_1, ID_2, "...>");
+        assertThat(relationship).isNotNull();
+
+        assertThat(relationship.getLineStyle()).isEqualTo(Dotted);
+
+        Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
+        assertThat(leftEndPoint.getLabel()).isNullOrEmpty();
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(None);
+
+        Relationship.EndPoint rightEndPoint = relationship.rightEndPoint();
+        assertThat(rightEndPoint.getLabel()).isNullOrEmpty();
+        assertThat(rightEndPoint.getDecoration()).isEqualTo(Arrow);
+    }
+
+    @Test
+    public void parseRelation_withStereotype() {
+        Relationship relationship = parser.parseRelation(ID_1, ID_2, "-.- <<uses>> >");
+        assertThat(relationship).isNotNull();
+
+        assertThat(relationship.getLineStyle()).isEqualTo(Dashed);
+
+        Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
+        assertThat(leftEndPoint.getLabel()).isNullOrEmpty();
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(None);
+
+        Relationship.EndPoint rightEndPoint = relationship.rightEndPoint();
+        assertThat(rightEndPoint.getLabel()).isEqualTo("<<uses>>");
+        assertThat(rightEndPoint.getDecoration()).isEqualTo(Arrow);
     }
 
     @Test
@@ -225,9 +311,46 @@ public class YumlParserTest {
         assertThat(relationships).hasSize(1);
 
         Relationship relationship = relationships.get(0);
-        assertThat(relationship.leftEndPoint().getLabel()).isEqualTo("uses ");
-        assertThat(relationship.leftEndPoint().getDecoration()).isEqualTo(Relationship.Decoration.None);
+        assertThat(relationship.leftEndPoint().getLabel()).isEqualTo("uses");
+        assertThat(relationship.leftEndPoint().getDecoration()).isEqualTo(None);
         assertThat(relationship.leftEndPoint().getElementId()).isEqualTo(new Id(0));
+
+    }
+
+    @Test
+    public void parseExpression_case2 () {
+        YumlParserListenerCollector handler = new YumlParserListenerCollector();
+        parser.parseExpression("[Customer]<>1->*[Order]", handler);
+
+        List<Element> elements = handler.getElements();
+        assertThat(elements).hasSize(2);
+
+        Element elementOne = elements.get(0);
+        assertThat(elementOne).isInstanceOf(ClassElement.class);
+        ClassElement classElement1 = (ClassElement) elementOne;
+        assertThat(classElement1.getNameSignature()).isEqualTo("Customer");
+        assertThat(classElement1.getAttributes()).isEmpty();
+        assertThat(classElement1.getMethods()).isEmpty();
+        assertThat(classElement1.getBackground()).isNull();
+
+        Element elementTwo = elements.get(1);
+        assertThat(elementTwo).isInstanceOf(ClassElement.class);
+        ClassElement classElement2 = (ClassElement) elementTwo;
+        assertThat(classElement2.getNameSignature()).isEqualTo("Order");
+        assertThat(classElement2.getAttributes()).isEmpty();
+        assertThat(classElement2.getMethods()).isEmpty();
+        assertThat(classElement2.getBackground()).isNull();
+
+        List<Relationship> relationships = handler.getRelationships();
+        assertThat(relationships).hasSize(1);
+
+        Relationship relationship = relationships.get(0);
+        assertThat(relationship.leftEndPoint().getLabel()).isEqualTo("1");
+        assertThat(relationship.leftEndPoint().getDecoration()).isEqualTo(Aggregation);
+        assertThat(relationship.leftEndPoint().getElementId()).isEqualTo(new Id(0));
+        assertThat(relationship.rightEndPoint().getLabel()).isEqualTo("*");
+        assertThat(relationship.rightEndPoint().getDecoration()).isEqualTo(Arrow);
+        assertThat(relationship.rightEndPoint().getElementId()).isEqualTo(new Id(1));
 
     }
 }

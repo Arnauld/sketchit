@@ -15,7 +15,9 @@ public class Relationship {
     
     public enum LineStyle {
         Solid,
-        Dashed
+        Dashed,
+        Dotted,
+        Bold
     }
 
 

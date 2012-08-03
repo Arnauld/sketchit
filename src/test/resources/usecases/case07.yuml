@@ -1,0 +1,1 @@
+[Customer]<>1->*[Order], [Customer]-[note: Aggregate Root{bg:cornsilk}], [Customer]-.-[note: Entity{bg:cornsilk}]

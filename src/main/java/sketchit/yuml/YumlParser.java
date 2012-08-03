@@ -1,11 +1,14 @@
 package sketchit.yuml;
 
+import static sketchit.domain.Stereotypes.decryptStereotypeDelimiters;
+import static sketchit.domain.Stereotypes.encryptStereotypeDelimiters;
+
 import sketchit.domain.ClassElement;
 import sketchit.domain.Element;
 import sketchit.domain.Id;
 import sketchit.domain.NoteElement;
 import sketchit.domain.Relationship;
-import sketchit.util.Strings;
+import sketchit.domain.Stereotypes;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +32,12 @@ public class YumlParser {
     public static final Pattern EXPR_LEFTSIDE = Pattern.compile("\\[([^\\]]+)\\]" // left side element
             + "([^\\[]+)?" // relationship
     );
+
+    public void parseExpressions(String expressions, Handler handler) {
+        for(String expression : expressions.split("[\n\r,]+")) {
+            parseExpression(expression, handler);
+        }
+    }
 
     public void parseExpression(CharSequence expression, Handler handler) {
         Id leftId = null;
@@ -80,49 +89,59 @@ public class YumlParser {
             relationship.usingLineStyle(Relationship.LineStyle.Dashed);
             leftAndRight = relationExpr.split(Pattern.quote("-.-"));
         }
+        else if(relationExpr.contains("...")) {
+            relationship.usingLineStyle(Relationship.LineStyle.Dotted);
+            leftAndRight = relationExpr.split(Pattern.quote("..."));
+        }
+        else if(relationExpr.contains("===")) {
+            relationship.usingLineStyle(Relationship.LineStyle.Bold);
+            leftAndRight = relationExpr.split(Pattern.quote("==="));
+        }
         else {
             relationship.usingLineStyle(Relationship.LineStyle.Solid);
             leftAndRight = relationExpr.split("\\-");
         }
 
         if(leftAndRight.length>1) {
-            parseRelationSide(relationship.leftEndPoint(), leftAndRight[0], false);
-            parseRelationSide(relationship.rightEndPoint(), leftAndRight[1], true);
+            parseRelationEndPoint(relationship.leftEndPoint(), leftAndRight[0]);
+            parseRelationEndPoint(relationship.rightEndPoint(), leftAndRight[1]);
+        }
+        else if(leftAndRight.length>0) {
+            parseRelationEndPoint(relationship.leftEndPoint(), leftAndRight[0]);
         }
 
         return relationship;
     }
 
-    private static void parseRelationSide(Relationship.EndPoint endPoint, String expr, boolean flipText) {
-        if(flipText)
-            expr = Strings.flipText(expr);
+    private static void parseRelationEndPoint(Relationship.EndPoint endPoint, String expr) {
 
-        int offset = 1;
-        if(expr.startsWith("<>")) {
-            offset = 2;
-            endPoint.usingDecoration(Relationship.Decoration.Aggregation);
+        String label = encryptStereotypeDelimiters(expr);
+        Relationship.Decoration decoration = Relationship.Decoration.None;
+
+        if(expr.contains("<>")) {
+            decoration = Relationship.Decoration.Aggregation;
+            label = label.replace("<>", "");
         }
-        else if(expr.startsWith("++")) {
-            offset = 2;
-            endPoint.usingDecoration(Relationship.Decoration.Composition);
+        else if(expr.contains("++")) {
+            decoration = Relationship.Decoration.Composition;
+            label = label.replace("++", "");
         }
-        else if(expr.startsWith("+")) {
-            endPoint.usingDecoration(Relationship.Decoration.Aggregation);
+        else if(expr.contains("+")) {
+            decoration = Relationship.Decoration.Aggregation;
+            label = label.replace("+", "");
         }
-        else if(expr.startsWith("<") || expr.startsWith(">")) {
-            endPoint.usingDecoration(Relationship.Decoration.Arrow);
+        else if(expr.contains("<") || expr.contains(">")) {
+            decoration = Relationship.Decoration.Arrow;
+            label = label.replace("<", "").replace(">", "");
         }
-        else if(expr.startsWith("^")) {
-            endPoint.usingDecoration(Relationship.Decoration.Inheritance);
-        }
-        else {
-            offset = 0;
+        else if(expr.contains("^")) {
+            decoration = Relationship.Decoration.Inheritance;
+            label = label.replace("^", "");
         }
 
-        expr = expr.substring(offset);
-        if(flipText)
-            expr = Strings.flipText(expr);
-        endPoint.usingLabel(expr);
+        label = decryptStereotypeDelimiters(label);
+
+        endPoint.usingDecoration(decoration).usingLabel(label.trim());
     }
 
     private static  void parseStyles(Map<String, String> styles, String inlinedStyles) {

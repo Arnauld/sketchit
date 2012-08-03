@@ -2,6 +2,7 @@ package sketchit.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -41,7 +42,11 @@ public class ClassElement extends Element<ClassElement> {
     }
 
     public String getClassName() {
-        return discardStereotypes(getNameSignature());
+        return Stereotypes.discardStereotypes(getNameSignature());
+    }
+
+    public List<String> getStereotypes() {
+        return Stereotypes.extractStereotypes(getNameSignature());
     }
 
     @Override
@@ -81,23 +86,4 @@ public class ClassElement extends Element<ClassElement> {
         return null;
     }
 
-    /**
-     * Remove any stereotypes that may be present in the text.
-     * <table>
-     * <tr>
-     * <td>&lt;&lt;Entity&gt;&gt; Customer</td>
-     * <td>Customer</td>
-     * </tr>
-     * <tr>
-     * <td>Customer</td>
-     * <td>Customer</td>
-     * </tr>
-     * </table>
-     *
-     * @param text to cleanup
-     * @return text wihout any stereotypes
-     */
-    public static String discardStereotypes(CharSequence text) {
-        return Pattern.compile("<<.*>>").matcher(text).replaceAll("").trim();
-    }
 }

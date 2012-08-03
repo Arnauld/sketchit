@@ -13,11 +13,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  *
  */
-public class YumlParserHandlerAdapter implements YumlParser.Handler {
+public class RepositoryYumlParserHandlerAdapter implements YumlParser.Handler {
 
     private final Repository repository;
 
-    public YumlParserHandlerAdapter(Repository repository) {
+    public RepositoryYumlParserHandlerAdapter(Repository repository) {
         this.repository = repository;
     }
 
