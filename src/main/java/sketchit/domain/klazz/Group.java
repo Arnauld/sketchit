@@ -1,4 +1,4 @@
-package sketchit.domain;
+package sketchit.domain.klazz;
 
 /**
  *

@@ -1,7 +1,9 @@
-package sketchit.domain;
+package sketchit.domain.klazz;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.api.Assertions.assertThat;
+
+import sketchit.domain.klazz.ClassElement;
 
 import org.junit.Test;
 

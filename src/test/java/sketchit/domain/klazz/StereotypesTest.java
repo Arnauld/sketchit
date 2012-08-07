@@ -1,8 +1,8 @@
-package sketchit.domain;
+package sketchit.domain.klazz;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static sketchit.domain.Stereotypes.discardStereotypes;
-import static sketchit.domain.Stereotypes.extractStereotypes;
+import static sketchit.domain.klazz.Stereotypes.discardStereotypes;
+import static sketchit.domain.klazz.Stereotypes.extractStereotypes;
 
 import org.junit.Test;
 

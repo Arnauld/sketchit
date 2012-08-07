@@ -1,5 +1,6 @@
-package sketchit.domain;
+package sketchit.domain.klazz;
 
+import sketchit.domain.Id;
 import sketchit.util.Adaptable;
 
 import java.util.HashMap;

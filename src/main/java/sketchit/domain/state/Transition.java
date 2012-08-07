@@ -1,39 +1,25 @@
-package sketchit.domain;
+package sketchit.domain.state;
+
+import sketchit.domain.Id;
+import sketchit.domain.Styles;
 
 /**
- *
+ * @author <a href="http://twitter.com/aloyer">@aloyer</a>
  */
-public class Relationship {
-
-    public enum Decoration {
-        None,
-        Composition,
-        Aggregation,
-        Arrow,
-        Inheritance
-    }
-    
-    public enum LineStyle {
-        Solid,
-        Dashed,
-        Dotted,
-        Bold
-    }
-
-
+public class Transition {
 
     private final EndPoint leftEndPoint;
     private final EndPoint rightEndPoint;
     private Id id;
-    private LineStyle lineStyle = LineStyle.Solid;
+    private Styles.LineStyle lineStyle = Styles.LineStyle.Solid;
 
-    public Relationship(Id leftId, Id rightId) {
+    public Transition(Id leftId, Id rightId) {
         this.leftEndPoint = new EndPoint(leftId);
         this.rightEndPoint = new EndPoint(rightId);
     }
 
     @SuppressWarnings("unchecked")
-    public Relationship usingId(Id id) {
+    public Transition usingId(Id id) {
         if (this.id != null) {
             throw new IllegalStateException("Id already assigned!");
         }
@@ -42,7 +28,7 @@ public class Relationship {
     }
 
 
-    public Relationship usingLineStyle(LineStyle lineStyle) {
+    public Transition usingLineStyle(Styles.LineStyle lineStyle) {
         this.lineStyle = lineStyle;
         return this;
     }
@@ -55,14 +41,14 @@ public class Relationship {
         return rightEndPoint;
     }
 
-    public LineStyle getLineStyle() {
+    public Styles.LineStyle getLineStyle() {
         return lineStyle;
     }
 
     public static class EndPoint {
         private final Id elementId;
         private String label;
-        private Decoration decoration = Decoration.None;
+        private Styles.Decoration decoration = Styles.Decoration.None;
 
         public EndPoint(Id elementId) {
             this.elementId = elementId;
@@ -76,7 +62,7 @@ public class Relationship {
             return label;
         }
 
-        public Decoration getDecoration() {
+        public Styles.Decoration getDecoration() {
             return decoration;
         }
 
@@ -85,7 +71,7 @@ public class Relationship {
             return this;
         }
 
-        public EndPoint usingDecoration(Decoration decoration) {
+        public EndPoint usingDecoration(Styles.Decoration decoration) {
             this.decoration = decoration;
             return this;
         }

@@ -1,4 +1,6 @@
-package sketchit.domain;
+package sketchit.domain.klazz;
+
+import sketchit.domain.Id;
 
 import java.util.ArrayList;
 import java.util.List;

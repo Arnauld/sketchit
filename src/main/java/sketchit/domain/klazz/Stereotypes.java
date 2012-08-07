@@ -1,4 +1,4 @@
-package sketchit.domain;
+package sketchit.domain.klazz;
 
 import java.util.ArrayList;
 import java.util.List;

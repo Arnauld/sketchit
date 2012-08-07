@@ -3,11 +3,12 @@ package sketchit.dot;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.text.WordUtils.wrap;
 
-import sketchit.domain.ClassElement;
-import sketchit.domain.Element;
-import sketchit.domain.NoteElement;
-import sketchit.domain.Relationship;
-import sketchit.domain.Repository;
+import sketchit.domain.Styles;
+import sketchit.domain.klazz.ClassElement;
+import sketchit.domain.klazz.Element;
+import sketchit.domain.klazz.NoteElement;
+import sketchit.domain.klazz.Relationship;
+import sketchit.domain.klazz.Repository;
 import sketchit.util.StreamWriter;
 
 import java.io.IOException;
@@ -116,7 +117,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         return endPoint.getElementId().asInt();
     }
 
-    private String decoration2Dot(Relationship.Decoration decoration) {
+    private String decoration2Dot(Styles.Decoration decoration) {
         switch (decoration) {
             case Arrow:
                 return "vee";
@@ -132,7 +133,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         }
     }
 
-    private String lineStyle2Dot(Relationship.LineStyle lineStyle) {
+    private String lineStyle2Dot(Styles.LineStyle lineStyle) {
         switch (lineStyle) {
             case Dashed:
                 return "dashed";

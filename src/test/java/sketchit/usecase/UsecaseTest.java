@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import sketchit.domain.Repository;
+import sketchit.domain.klazz.Repository;
 import sketchit.dot.ClassDiagramGenerator;
 import sketchit.testutil.LabeledParameterized;
 import sketchit.transformer.SVGConverter;

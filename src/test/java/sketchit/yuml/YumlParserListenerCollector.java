@@ -1,8 +1,8 @@
 package sketchit.yuml;
 
-import sketchit.domain.Element;
+import sketchit.domain.klazz.Element;
 import sketchit.domain.Id;
-import sketchit.domain.Relationship;
+import sketchit.domain.klazz.Relationship;
 
 import java.util.ArrayList;
 import java.util.List;

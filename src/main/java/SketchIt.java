@@ -1,6 +1,6 @@
 import static java.util.Arrays.asList;
 
-import sketchit.domain.Repository;
+import sketchit.domain.klazz.Repository;
 import sketchit.dot.ClassDiagramGenerator;
 import sketchit.transformer.SVGConverter;
 import sketchit.transformer.SVGTransformer;

@@ -1,14 +1,14 @@
 package sketchit.yuml;
 
-import static sketchit.domain.Stereotypes.decryptStereotypeDelimiters;
-import static sketchit.domain.Stereotypes.encryptStereotypeDelimiters;
+import static sketchit.domain.klazz.Stereotypes.decryptStereotypeDelimiters;
+import static sketchit.domain.klazz.Stereotypes.encryptStereotypeDelimiters;
 
-import sketchit.domain.ClassElement;
-import sketchit.domain.Element;
+import sketchit.domain.Styles;
+import sketchit.domain.klazz.ClassElement;
+import sketchit.domain.klazz.Element;
 import sketchit.domain.Id;
-import sketchit.domain.NoteElement;
-import sketchit.domain.Relationship;
-import sketchit.domain.Stereotypes;
+import sketchit.domain.klazz.NoteElement;
+import sketchit.domain.klazz.Relationship;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,19 +86,19 @@ public class YumlParser {
 
         String[] leftAndRight;
         if(relationExpr.contains("-.-")) {
-            relationship.usingLineStyle(Relationship.LineStyle.Dashed);
+            relationship.usingLineStyle(Styles.LineStyle.Dashed);
             leftAndRight = relationExpr.split(Pattern.quote("-.-"));
         }
         else if(relationExpr.contains("...")) {
-            relationship.usingLineStyle(Relationship.LineStyle.Dotted);
+            relationship.usingLineStyle(Styles.LineStyle.Dotted);
             leftAndRight = relationExpr.split(Pattern.quote("..."));
         }
         else if(relationExpr.contains("===")) {
-            relationship.usingLineStyle(Relationship.LineStyle.Bold);
+            relationship.usingLineStyle(Styles.LineStyle.Bold);
             leftAndRight = relationExpr.split(Pattern.quote("==="));
         }
         else {
-            relationship.usingLineStyle(Relationship.LineStyle.Solid);
+            relationship.usingLineStyle(Styles.LineStyle.Solid);
             leftAndRight = relationExpr.split("\\-");
         }
 
@@ -116,26 +116,26 @@ public class YumlParser {
     private static void parseRelationEndPoint(Relationship.EndPoint endPoint, String expr) {
 
         String label = encryptStereotypeDelimiters(expr);
-        Relationship.Decoration decoration = Relationship.Decoration.None;
+        Styles.Decoration decoration = Styles.Decoration.None;
 
         if(expr.contains("<>")) {
-            decoration = Relationship.Decoration.Aggregation;
+            decoration = Styles.Decoration.Aggregation;
             label = label.replace("<>", "");
         }
         else if(expr.contains("++")) {
-            decoration = Relationship.Decoration.Composition;
+            decoration = Styles.Decoration.Composition;
             label = label.replace("++", "");
         }
         else if(expr.contains("+")) {
-            decoration = Relationship.Decoration.Aggregation;
+            decoration = Styles.Decoration.Aggregation;
             label = label.replace("+", "");
         }
         else if(expr.contains("<") || expr.contains(">")) {
-            decoration = Relationship.Decoration.Arrow;
+            decoration = Styles.Decoration.Arrow;
             label = label.replace("<", "").replace(">", "");
         }
         else if(expr.contains("^")) {
-            decoration = Relationship.Decoration.Inheritance;
+            decoration = Styles.Decoration.Inheritance;
             label = label.replace("^", "");
         }
 

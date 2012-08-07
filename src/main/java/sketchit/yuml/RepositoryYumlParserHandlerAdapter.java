@@ -1,13 +1,9 @@
 package sketchit.yuml;
 
-import sketchit.domain.Element;
+import sketchit.domain.klazz.Element;
 import sketchit.domain.Id;
-import sketchit.domain.Relationship;
-import sketchit.domain.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import sketchit.domain.klazz.Relationship;
+import sketchit.domain.klazz.Repository;
 
 /**
  *
