@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>sketchit</groupId>
-    <artifactId>sketchit</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+  <groupId>sketchit</groupId>
+  <artifactId>sketchit</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
   <!-- ************************************************ -->
   <!-- *~~~~~~~~~~~~~~~~~PROPERTIES~~~~~~~~~~~~~~~~~~~* -->
@@ -18,19 +18,9 @@
 
     <!-- lib versions -->
     <batik.version>1.7</batik.version>
-    <hamcrest.version>1.2</hamcrest.version>
     <slf4j.version>1.6.4</slf4j.version>
     <fest-assert.version>2.0M5</fest-assert.version>
 
-    <!-- plugin versions -->
-    <checkstyle.version>2.9.1</checkstyle.version>
-    <pmd.version>2.7.1</pmd.version>
-
-    <!-- docco -->
-    <!-- 1.0-beta1 -->
-    <docco.maven.version>1.0.2-SNAPSHOT</docco.maven.version>
-    <docco.confdir>${project.basedir}/src/main/docco</docco.confdir>
-    <docco.phase>package</docco.phase>
   </properties>
 
   <!-- ************************************************ -->
@@ -73,6 +63,12 @@
       <version>2.3</version>
     </dependency>
 
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.2</version>
+    </dependency>
+
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ~~~~~~~~~~~~~~~~Log~~~~~~~~~~~~~~~~ -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -80,6 +76,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -101,19 +98,7 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependency>
       <groupId>junit</groupId>
-      <artifactId>junit-dep</artifactId>
-      <optional>true</optional>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -142,20 +127,10 @@
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <dependency>
         <groupId>junit</groupId>
-        <artifactId>junit-dep</artifactId>
+        <artifactId>junit</artifactId>
         <version>4.10</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-core</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
@@ -165,7 +140,7 @@
   </dependencyManagement>
 
   <!-- ************************************************ -->
-  <!-- *~~~~~~~~~~~~~~~~~REPORTING~~~~~~~~~~~~~~~~~~~~* -->
+  <!-- *~~~~~~~~~~~~~~~~~~~BUILD~~~~~~~~~~~~~~~~~~~~~~* -->
   <!-- ************************************************ -->
   <build>
     <testResources>
@@ -181,141 +156,30 @@
     <plugins>
 
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <!-- ~~~~~~~~~~~~~~Docco~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~Assembly~~~~~~~~~~~~~ -->
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <plugin>
-        <!-- https://bitbucket.org/doklovic_atlassian/atlassian-docco/wiki/docco-maven -->
-        <groupId>com.atlassian.docco</groupId>
-        <artifactId>atlassian-docco-maven</artifactId>
-        <version>${docco.maven.version}</version>
-        <executions>
-          <execution>
-            <!-- process-resources -->
-            <phase>${docco.phase}</phase>
-            <goals>
-              <goal>docco</goal>
-            </goals>
-            <configuration>
-              <horizontalTemplate>${docco.confdir}/template/atlassian-docco-h.soy</horizontalTemplate>
-              <verticalTemplate>${docco.confdir}/template/atlassian-docco-v.soy</verticalTemplate>
-              <customResources>
-                <customResource>${docco.confdir}/resources</customResource>
-              </customResources>
-              <sourceDirectory>src/test</sourceDirectory>
-              <includes>
-                <include>**/sample/**/*Test.java</include>
-                <include>**/sample/**/*.story</include>
-              </includes>
-              <customMappings>
-                <customMapping>
-                  <extension>story</extension>
-                  <commentType>code</commentType>
-                  <syntax>specit_en</syntax>
-                  <stripJavadoc>false</stripJavadoc>
-                </customMapping>
-              </customMappings>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <!-- ~~~~~~~~~~~~~~~Site~~~~~~~~~~~~~~~~ -->
-      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.1</version>
+        <!--
+        Note that you should always do a compile before because it will just put
+        whatever is in "target/classes" in the JAR
+        use:
+               mvn assembly:single
+               mvn clean compile assembly:single
+         -->
+        <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-          <!-- ~~~~~~~~~~~~~REPORTING~~~~~~~~~~~~~ -->
-          <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-          <reportPlugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-project-info-reports-plugin</artifactId>
-              <version>2.4</version>
-              <configuration>
-                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-              </configuration>
-              <!-- simpler configuration without reportSets available for usual cases -->
-              <reports>
-                <report>dependencies</report>
-                <report>scm</report>
-              </reports>
-            </plugin>
-
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.8</version>
-            </plugin>
-
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>cobertura-maven-plugin</artifactId>
-              <version>2.5.1</version>
-            </plugin>
-
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-checkstyle-plugin</artifactId>
-              <version>${checkstyle.version}</version>
-              <configuration>
-                <configLocation>conf/checkstyle.xml</configLocation>
-              </configuration>
-            </plugin>
-
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-pmd-plugin</artifactId>
-              <version>${pmd.version}</version>
-              <configuration>
-                <linkXref>true</linkXref>
-                <sourceEncoding>utf-8</sourceEncoding>
-                <minimumTokens>100</minimumTokens>
-                <targetJdk>1.6</targetJdk>
-                <excludes>
-                  <exclude>**/generated/*.java</exclude>
-                </excludes>
-                <excludeRoots>
-                  <excludeRoot>target/generated-sources/stubs</excludeRoot>
-                </excludeRoots>
-              </configuration>
-            </plugin>
-
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>findbugs-maven-plugin</artifactId>
-              <version>2.5.1</version>
-              <configuration>
-                <effort>Max</effort>
-              </configuration>
-            </plugin>
-          </reportPlugins>
+          <archive>
+            <manifest>
+              <mainClass>SketchIt</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
         </configuration>
       </plugin>
-
 
     </plugins>
   </build>
 
-  <!-- ************************************************ -->
-  <!-- *~~~~~~~~~~~~~PLUGIN REPOSITORIES~~~~~~~~~~~~~~* -->
-  <!-- ************************************************ -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>atlassian-public</id>
-      <url>https://maven.atlassian.com/content/groups/public/</url>
-      <releases>
-        <checksumPolicy>fail</checksumPolicy>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-    
 </project>

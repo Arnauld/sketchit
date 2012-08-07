@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" baseProfile="full" id="body" width="8in" height="8in" viewBox="0 0 1 1" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<title>SVG drawing</title>
+<desc>This was produced by version 4.4 of GNU libplot, a free library for exporting 2-D vector graphics.</desc>
+<rect id="background" x="0" y="0" width="1" height="1" stroke="none" fill="white"/>
+<g id="content" transform="translate(0.1875,0.27031) scale(1,-1) scale(0.125) " xml:space="preserve" stroke="black" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10.433" stroke-dasharray="none" stroke-dashoffset="0" stroke-opacity="1" fill="none" fill-rule="evenodd" fill-opacity="1" font-style="normal" font-variant="normal" font-weight="normal" font-stretch="normal" font-size-adjust="none" letter-spacing="normal" word-spacing="normal" text-anchor="start">
+<rect x="0" y="-0.15" width="0.75" height="0.3" stroke-width="0.0094118" />
+<text transform="translate(0.13965,-0.049028) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >s:Caller</text>
+<line x1="0.1" y1="-0.07" x2="0.65" y2="-0.07" stroke-width="0.0094118" />
+<rect x="1.25" y="-0.15" width="0.75" height="0.3" stroke-width="0.0094118" />
+<text transform="translate(1.4012,-0.049028) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >:Switch</text>
+<line x1="1.35" y1="-0.07" x2="1.9" y2="-0.07" stroke-width="0.0094118" />
+<rect x="3.75" y="-0.15" width="0.75" height="0.3" stroke-width="0.0094118" />
+<text transform="translate(3.9013,-0.049028) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >r:Caller</text>
+<line x1="3.85" y1="-0.07" x2="4.4" y2="-0.07" stroke-width="0.0094118" />
+<line x1="1.625" y1="-0.15" x2="1.625" y2="-0.25" stroke-width="0.0094118" stroke-dasharray="0.05, 0.05"/>
+<line x1="1.575" y1="-0.25" x2="1.675" y2="-0.25" stroke-width="0.0094118" />
+<line x1="0.435" y1="-0.5" x2="1.565" y2="-0.5" stroke-width="0.0094118" />
+<polyline points="1.465,-0.45 1.565,-0.5 1.465,-0.55 " stroke-width="0.0094118" />
+<text transform="translate(0.6566,-0.46569) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >liftReceiver</text>
+<text transform="translate(0.98069,-0.63236) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="0.375" y1="-0.15" x2="0.375" y2="-0.5" stroke-width="0.0094118" stroke-dasharray="0.05, 0.05"/>
+<line x1="0.325" y1="-0.5" x2="0.425" y2="-0.5" stroke-width="0.0094118" />
+<line x1="1.565" y1="-0.75" x2="0.435" y2="-0.75" stroke-width="0.0094118" />
+<polygon points="0.535,-0.775 0.435,-0.75 0.535,-0.725 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(0.58326,-0.71569) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >setDialTone()</text>
+<text transform="translate(0.98069,-0.88236) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="0.435" y1="-1" x2="1.565" y2="-1" stroke-width="0.0094118" />
+<polyline points="1.465,-0.95 1.565,-1 1.465,-1.05 " stroke-width="0.0094118" />
+<text transform="translate(0.64118,-0.96569) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >*dialDigit(d)</text>
+<text transform="translate(0.98069,-1.1324) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<text transform="translate(1.725,-0.96569) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >{dialing.executionTime &lt; 30s}</text>
+<text transform="translate(1.7057,-1.1324) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="1.575" y1="-0.25" x2="1.575" y2="-1.15" stroke-width="0.0094118" />
+<line x1="1.675" y1="-0.25" x2="1.675" y2="-1.15" stroke-width="0.0094118" />
+<line x1="1.625" y1="-1.15" x2="1.725" y2="-1.15" stroke-width="0.0094118" />
+<polyline points="1.735,-1.4 2.235,-1.4 2.235,-1.65 1.735,-1.65 " stroke-width="0.0094118" />
+<polygon points="1.835,-1.675 1.735,-1.65 1.835,-1.625 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(1.735,-1.324) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >routeCalls(s,n)</text>
+<text transform="translate(1.7157,-1.4907) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<text transform="translate(1.7157,-1.6574) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<text transform="translate(1.7157,-1.824) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="1.575" y1="-1.15" x2="1.575" y2="-1.65" stroke-width="0.0094118" />
+<line x1="1.625" y1="-1.15" x2="1.625" y2="-1.65" stroke-width="0.0094118" />
+<line x1="1.725" y1="-1.15" x2="1.725" y2="-1.65" stroke-width="0.0094118" />
+<line x1="1.625" y1="-1.65" x2="1.725" y2="-1.65" stroke-width="0.0094118" />
+<line x1="1.685" y1="-1.9" x2="2.4925" y2="-1.9" stroke-width="0.0094118" />
+<polygon points="2.3925,-1.875 2.4925,-1.9 2.3925,-1.925 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(1.7259,-1.8657) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >«create»</text>
+<text transform="translate(2.0694,-2.0324) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<rect x="2.4925" y="-2.05" width="0.75" height="0.3" stroke-width="0.0094118" />
+<text transform="translate(2.5549,-1.949) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >c:Convers</text>
+<line x1="2.5925" y1="-1.97" x2="3.1425" y2="-1.97" stroke-width="0.0094118" />
+<line x1="2.875" y1="-2.05" x2="2.875" y2="-2.175" stroke-width="0.0094118" stroke-dasharray="0.05, 0.05"/>
+<line x1="2.825" y1="-2.175" x2="2.925" y2="-2.175" stroke-width="0.0094118" />
+<line x1="2.935" y1="-2.425" x2="4.065" y2="-2.425" stroke-width="0.0094118" />
+<polygon points="3.965,-2.4 4.065,-2.425 3.965,-2.45 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(3.338,-2.3907) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >ring()</text>
+<text transform="translate(3.4807,-2.5574) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="4.125" y1="-0.15" x2="4.125" y2="-2.425" stroke-width="0.0094118" stroke-dasharray="0.05, 0.05"/>
+<line x1="4.075" y1="-2.425" x2="4.175" y2="-2.425" stroke-width="0.0094118" />
+<line x1="4.065" y1="-2.675" x2="2.935" y2="-2.675" stroke-width="0.0094118" />
+<polyline points="3.035,-2.725 2.935,-2.675 3.035,-2.625 " stroke-width="0.0094118" />
+<text transform="translate(3.1566,-2.6407) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >liftReceiver</text>
+<text transform="translate(3.4807,-2.8074) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="2.815" y1="-2.925" x2="1.685" y2="-2.925" stroke-width="0.0094118" />
+<polygon points="1.785,-2.95 1.685,-2.925 1.785,-2.9 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(1.8834,-2.8907) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >connect(r,s)</text>
+<text transform="translate(2.2307,-3.0574) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="1.565" y1="-3.175" x2="0.435" y2="-3.175" stroke-width="0.0094118" />
+<polygon points="0.535,-3.2 0.435,-3.175 0.535,-3.15 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(0.68743,-3.1407) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >connect(r)</text>
+<text transform="translate(0.98069,-3.3074) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="1.685" y1="-3.425" x2="4.065" y2="-3.425" stroke-width="0.0094118" />
+<polygon points="3.965,-3.4 4.065,-3.425 3.965,-3.45 " stroke-width="0.0094118" fill="black" />
+<text transform="translate(2.8557,-3.5574) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<text transform="translate(1.725,-3.3907) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" >connect(s)</text>
+<text transform="translate(1.7057,-3.5574) scale(1,-1) scale(0.0069444) " font-family="Helvetica,sans-serif" font-size="20px" stroke="none" fill="black" > </text>
+<line x1="0.325" y1="-0.5" x2="0.325" y2="-3.825" stroke-width="0.0094118" />
+<line x1="0.425" y1="-0.5" x2="0.425" y2="-3.825" stroke-width="0.0094118" />
+<line x1="0.325" y1="-3.825" x2="0.425" y2="-3.825" stroke-width="0.0094118" />
+<line x1="1.575" y1="-1.65" x2="1.575" y2="-3.825" stroke-width="0.0094118" />
+<line x1="1.675" y1="-1.65" x2="1.675" y2="-3.825" stroke-width="0.0094118" />
+<line x1="1.575" y1="-3.825" x2="1.675" y2="-3.825" stroke-width="0.0094118" />
+<line x1="2.825" y1="-2.175" x2="2.825" y2="-3.825" stroke-width="0.0094118" />
+<line x1="2.925" y1="-2.175" x2="2.925" y2="-3.825" stroke-width="0.0094118" />
+<line x1="2.825" y1="-3.825" x2="2.925" y2="-3.825" stroke-width="0.0094118" />
+<line x1="4.075" y1="-2.425" x2="4.075" y2="-3.825" stroke-width="0.0094118" />
+<line x1="4.175" y1="-2.425" x2="4.175" y2="-3.825" stroke-width="0.0094118" />
+<line x1="4.075" y1="-3.825" x2="4.175" y2="-3.825" stroke-width="0.0094118" />
+</g>
+</svg>
