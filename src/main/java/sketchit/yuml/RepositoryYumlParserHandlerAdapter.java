@@ -5,6 +5,8 @@ import sketchit.domain.Id;
 import sketchit.domain.klazz.Relationship;
 import sketchit.domain.klazz.Repository;
 
+import java.util.Map;
+
 /**
  *
  *
@@ -26,4 +28,10 @@ public class RepositoryYumlParserHandlerAdapter implements YumlParser.Handler {
     public Id emit(Relationship relationship) {
         return repository.add(relationship);
     }
+
+    @Override
+    public void emit(Map<String, String> meta) {
+        repository.defineMeta(meta);
+    }
+
 }

@@ -1,0 +1,4 @@
+@{direction:TD}
+[World]->*[City]
+[City]->0..1[ResearchStation]
+[Member]->locatedAt;1[City]

@@ -1,0 +1,6 @@
+[<<card>> InfectionCard]->apply on;1[City]
+[<<card>> PlayerCard]^-[<<card>> EpidemieCard]
+[InfectionCard]->1[Disease]
+[Member]->player's hand;0..7[<<card>> PlayerCard]
+[World]->[PlayerDrawPile]->*[PlayerCard]
+[World]->[InfectionDrawPile]->*[InfectionCard]

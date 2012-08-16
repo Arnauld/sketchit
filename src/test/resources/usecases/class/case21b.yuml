@@ -1,0 +1,6 @@
+[backend-parent]^[backend-core]
+[backend-parent]^[backend-webapp-springmvc]
+[backend-parent]^[backend-end2endTests]
+[backend-parent]<>->[backend-core]
+[backend-parent]<>->[backend-webapp-springmvc]
+[backend-parent]<>->[backend-end2endTests]

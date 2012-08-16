@@ -1,0 +1,2 @@
+[Action]->invoker[Member]
+[Action]->invokedBy[Member]...[note: invokedBy==invoker || invokedBy.role==Dispatcher]

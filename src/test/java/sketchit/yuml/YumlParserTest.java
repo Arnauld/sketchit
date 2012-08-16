@@ -1,6 +1,7 @@
 package sketchit.yuml;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.data.MapEntry.entry;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static sketchit.domain.Styles.Decoration.Aggregation;
@@ -18,11 +19,13 @@ import sketchit.domain.Id;
 import sketchit.domain.klazz.NoteElement;
 import sketchit.domain.klazz.Relationship;
 
+import org.fest.assertions.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -94,6 +97,21 @@ public class YumlParserTest {
         NoteElement noteElement = (NoteElement) element;
         assertThat(noteElement.getText()).isEqualTo("Aggregate Root");
         assertThat(noteElement.getBackground()).isEqualTo("cornsilk");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void parseExpression_meta() {
+        YumlParser.Handler handler = Mockito.mock(YumlParser.Handler.class);
+        parser.parseExpression("@{rankSep:0.5,direction:TD}", handler);
+
+        ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
+        verify(handler).emit(captor.capture());
+        verifyNoMoreInteractions(handler);
+
+        Map<String,String> meta = captor.getValue();
+        assertThat(meta).isNotNull();
+        assertThat(meta).contains(entry("rankSep", "0.5"), entry("direction", "TD"));
     }
 
     @Test
@@ -352,5 +370,43 @@ public class YumlParserTest {
         assertThat(relationship.rightEndPoint().getDecoration()).isEqualTo(Arrow);
         assertThat(relationship.rightEndPoint().getElementId()).isEqualTo(new Id(1));
 
+    }
+
+    @Test
+    public void parseExpression_multipleStyles () {
+        YumlParserListenerCollector handler = new YumlParserListenerCollector();
+        parser.parseExpression("[City{rank:a}]->*[Cube{rank:a,bg:orange}]", handler);
+
+        List<Element> elements = handler.getElements();
+        assertThat(elements).hasSize(2);
+
+        Element elementOne = elements.get(0);
+        assertThat(elementOne).isInstanceOf(ClassElement.class);
+        ClassElement classElement1 = (ClassElement) elementOne;
+        assertThat(classElement1.getNameSignature()).isEqualTo("City");
+        assertThat(classElement1.getAttributes()).isEmpty();
+        assertThat(classElement1.getMethods()).isEmpty();
+        assertThat(classElement1.getBackground()).isNull();
+        assertThat(classElement1.getStyles()).contains(entry("rank", "a"));
+
+        Element elementTwo = elements.get(1);
+        assertThat(elementTwo).isInstanceOf(ClassElement.class);
+        ClassElement classElement2 = (ClassElement) elementTwo;
+        assertThat(classElement2.getNameSignature()).isEqualTo("Cube");
+        assertThat(classElement2.getAttributes()).isEmpty();
+        assertThat(classElement2.getMethods()).isEmpty();
+        assertThat(classElement2.getBackground()).isEqualTo("orange");
+        assertThat(classElement2.getStyles()).contains(entry("rank", "a"), entry("bg", "orange"));
+
+        List<Relationship> relationships = handler.getRelationships();
+        assertThat(relationships).hasSize(1);
+
+        Relationship relationship = relationships.get(0);
+        assertThat(relationship.leftEndPoint().getLabel()).isNullOrEmpty();
+        assertThat(relationship.leftEndPoint().getDecoration()).isEqualTo(None);
+        assertThat(relationship.leftEndPoint().getElementId()).isEqualTo(new Id(0));
+        assertThat(relationship.rightEndPoint().getLabel()).isEqualTo("*");
+        assertThat(relationship.rightEndPoint().getDecoration()).isEqualTo(Arrow);
+        assertThat(relationship.rightEndPoint().getElementId()).isEqualTo(new Id(1));
     }
 }

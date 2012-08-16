@@ -1,0 +1,2 @@
+[CharterFlight]->1[PlayerCard]
+[CharterFlight]...<<constraint>>[note: invoker.city==card.city]

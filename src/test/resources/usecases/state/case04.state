@@ -1,0 +1,5 @@
+(())->(Open)
+(Open)->switch(Close)
+(Close)->using key(Open)
+(Open)->((X))
+(Close)->((X))

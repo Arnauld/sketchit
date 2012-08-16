@@ -1,0 +1,3 @@
+[ShuttleFlight]->from[City]
+[ShuttleFlight]->destination[City]
+[ShuttleFlight]...[note: invoker.city==from && ∃from.researchCenter && ∃destination.researchCenter]

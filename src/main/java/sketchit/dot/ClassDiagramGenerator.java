@@ -9,12 +9,14 @@ import sketchit.domain.klazz.Element;
 import sketchit.domain.klazz.NoteElement;
 import sketchit.domain.klazz.Relationship;
 import sketchit.domain.klazz.Repository;
+import sketchit.util.Multimap;
 import sketchit.util.StreamWriter;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -33,6 +35,7 @@ public class ClassDiagramGenerator implements StreamWriter {
     private int nodeStereotypeFontSize = 10;
     private int noteFontSize = 10;
     private int noteWrapLength = 30;
+    private float rankSep = 0.75f;
 
     public ClassDiagramGenerator(Repository repository) {
         this.repository = repository;
@@ -66,8 +69,8 @@ public class ClassDiagramGenerator implements StreamWriter {
 
     private void generateHeader(PrintStream out) {
         out.println("digraph G {");
-        out.println("    ranksep = 1");
-        out.println("    rankdir = " + direction);
+        out.println("    ranksep = " + repository.meta("rankSep", ""+rankSep));
+        out.println("    rankdir = " + repository.meta("direction", ""+direction));
     }
 
     private void generateFooter(PrintStream out) {
@@ -86,8 +89,28 @@ public class ClassDiagramGenerator implements StreamWriter {
             }
         }
 
+        generateElementsRankHints(out);
+
         for (Relationship relationship : repository.relations()) {
             generateEdge(out, relationship);
+        }
+    }
+
+    private void generateElementsRankHints(PrintStream out) {
+        Multimap<String, Element> rankMap = new Multimap<String, Element>();
+        for (Element element : repository.elements()) {
+            String rank = element.getStyle("rank");
+            if(rank!=null) {
+                rankMap.add(rank, element);
+            }
+        }
+
+        for (Map.Entry<String, List<Element>> entry : rankMap.entrySet()) {
+            out.print("{ rank = same");
+            for(Element<?> element : entry.getValue()) {
+                out.print("; N" + element.getId().asInt());
+            }
+            out.println("}");
         }
     }
 
@@ -100,8 +123,8 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("               style = \"" + lineStyle2Dot(relationship.getLineStyle()) + "\"");
         out.println("           arrowtail = \"" + decoration2Dot(relationship.leftEndPoint().getDecoration()) + "\"");
         out.println("           arrowhead = \"" + decoration2Dot(relationship.rightEndPoint().getDecoration()) + "\"");
-        out.println("           taillabel = \"" + formatLabel(relationship.leftEndPoint().getLabel()) + "\"");
-        out.println("           headlabel = \"" + formatLabel(relationship.rightEndPoint().getLabel()) + "\"");
+        out.println("           taillabel = \"" + formatEdgeLabel(relationship.leftEndPoint().getLabel()) + "\"");
+        out.println("           headlabel = \"" + formatEdgeLabel(relationship.rightEndPoint().getLabel()) + "\"");
         out.println("       labeldistance = " + edgeLabelDistance);
         out.println("            fontsize = " + edgeFontSize);
         out.println("            fontname = \""+ fontName + "\"");
@@ -109,8 +132,17 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("    N" + id2Int(relationship.leftEndPoint()) + " -> N" + id2Int(relationship.rightEndPoint()));
     }
 
-    private static String formatLabel(String label) {
-        return (label == null ) ? "" : label;
+    private static String formatEdgeLabel(String label) {
+        if(label==null)
+            return "";
+
+        StringBuilder builder = new StringBuilder();
+        for(String element : label.split(";")) {
+            if(builder.length()>0)
+                builder.append("\\n");
+            builder.append(ensureTextIsValid(element));
+        }
+        return builder.toString();
     }
 
     private static int id2Int(Relationship.EndPoint endPoint) {
@@ -228,7 +260,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("    N" + element.getId().asInt() + " [");
         out.println("              label = \"" + formatNoteElementLabel(element) + "\"");
         out.println("              style = \"filled\"");
-        out.println("          fillcolor = \"" + defaultString(element.getBackground(), "yellow") + "\"");
+        out.println("          fillcolor = \"" + defaultString(element.getBackground(), "cornsilk") + "\"");
         out.println("           fontname = \"" + fontName + "\"");
         out.println("    ]");
     }
@@ -239,6 +271,7 @@ public class ClassDiagramGenerator implements StreamWriter {
     }
 
     private static String ensureTextIsValid(String text) {
+        System.out.println("ClassDiagramGenerator.ensureTextIsValid(" + text + ")");
         return text.replaceAll("([<>])", "\\\\$1");
     }
 

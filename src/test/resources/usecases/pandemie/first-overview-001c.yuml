@@ -1,0 +1,4 @@
+[World|+outbreaks;+infectionRate]
+[World]->*[City]
+[City{rank:a}]->*[Cube{rank:a,bg:orange}]->1[Disease]
+[Cube]...[note: each cube indicates the infection factor of the city]

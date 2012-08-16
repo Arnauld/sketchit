@@ -1,0 +1,6 @@
+@{rankSep:0.3}
+[DispatcherMove]->[Member]
+[DispatcherMove]->[BasicAction]
+[BasicAction]...[note: other than DispatcherMove!]
+[DispatcherMove]...[note: can be invoked only if invoker.role==dispatcher]
+[Member]...[note: must accept to be moved]

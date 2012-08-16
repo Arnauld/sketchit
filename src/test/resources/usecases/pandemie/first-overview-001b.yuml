@@ -1,0 +1,3 @@
+[<<enum>> Disease| Blue;Black;Yellow;Red]
+[Team]->discovered;0..n[Cure]->cure;1[Disease]
+[Cure]...[note: n==Disease.values().length]

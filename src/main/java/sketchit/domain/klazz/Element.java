@@ -63,4 +63,10 @@ public abstract class Element<T extends Element<T>> implements Adaptable {
         }
         return styles;
     }
+
+    public String getStyle(String key) {
+        if(styles!=null)
+            return styles.get(key);
+        return null;
+    }
 }

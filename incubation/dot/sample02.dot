@@ -1,0 +1,50 @@
+digraph G {
+    graph [rankdir = TD];
+    ranksep = 1
+
+    start [
+           shape = "circle"
+          height = 0.3
+           style = filled
+       fillcolor = black
+       fixedsize = true
+           label = ""
+    ];
+
+    node [
+           shape = "circle"
+          height = 1
+           style = "filled"
+       fillcolor = "lightgrey"
+        fontname = "jd"
+    ];
+    N2 [ label = "Open" ]
+    N4 [ label = "Closed" ]
+
+    end [
+           shape = "doublecircle"
+          height = 0.3
+           style = filled
+       fillcolor = black
+       fixedsize = true
+           label = ""
+    ];
+
+    edge [
+               shape = "edge"
+                 dir = "both"
+               style = "solid"
+           arrowtail = "none"
+           arrowhead = "vee"
+           taillabel = ""
+           headlabel = ""
+       labeldistance = 2
+            fontsize = 8
+            fontname = "jd"
+    ];
+
+    start -> N2 [constraint=false]
+    N2 -> N4 [ headlabel = "using key"]
+    N4 -> N2 [ headlabel = "switch"]
+    N4 -> end
+}

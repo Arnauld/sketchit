@@ -1,0 +1,3 @@
+[Drive]->from[City]
+[Drive]->destination[City]
+[Drive]...<<constraint>>[note: from==invoker.city && distance(from,destination)==1]

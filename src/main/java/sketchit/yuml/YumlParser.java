@@ -26,20 +26,30 @@ public class YumlParser {
     public interface Handler {
         Id emit(Element<?> element);
         Id emit(Relationship relationship);
+        void emit(Map<String, String> meta);
     }
 
-
+    public static final Pattern EXPR_META = Pattern.compile("\\s*@\\{([^\\}]+)\\}\\s*");
     public static final Pattern EXPR_LEFTSIDE = Pattern.compile("\\[([^\\]]+)\\]" // left side element
             + "([^\\[]+)?" // relationship
     );
 
     public void parseExpressions(String expressions, Handler handler) {
-        for(String expression : expressions.split("[\n\r,]+")) {
+        for(String expression : expressions.split("[\n\r]+")) {
             parseExpression(expression, handler);
         }
     }
 
     public void parseExpression(CharSequence expression, Handler handler) {
+        Matcher matcherMeta = EXPR_META.matcher(expression);
+        if(matcherMeta.find()) {
+            Map<String,String> meta = new HashMap<String, String>();
+            String inlined = matcherMeta.group(1);
+            parseStyles(meta, inlined);
+            handler.emit(meta);
+            return;
+        }
+
         Id leftId = null;
         String relationExpr = null;
 
@@ -59,7 +69,7 @@ public class YumlParser {
     public static final Pattern META = Pattern.compile("(\\{([^\\}]+)\\})");
     public static final Pattern PARTS = Pattern.compile("\\|");
     public static final Pattern VALUES = Pattern.compile(";");
-    public static final Pattern NOTE = Pattern.compile("^[\\s]*note\\:(.*)");
+    public static final Pattern NOTE = Pattern.compile("^[\\s]*note:(.*)");
 
     public Element parseElement(CharSequence content) {
         Map<String,String> styles = new HashMap<String, String>();
@@ -87,19 +97,19 @@ public class YumlParser {
         String[] leftAndRight;
         if(relationExpr.contains("-.-")) {
             relationship.usingLineStyle(Styles.LineStyle.Dashed);
-            leftAndRight = relationExpr.split(Pattern.quote("-.-"));
+            leftAndRight = relationExpr.split("[\\-]+(\\.[\\-]+)+");
         }
         else if(relationExpr.contains("...")) {
             relationship.usingLineStyle(Styles.LineStyle.Dotted);
-            leftAndRight = relationExpr.split(Pattern.quote("..."));
+            leftAndRight = relationExpr.split("[\\.]{3,}");
         }
         else if(relationExpr.contains("===")) {
             relationship.usingLineStyle(Styles.LineStyle.Bold);
-            leftAndRight = relationExpr.split(Pattern.quote("==="));
+            leftAndRight = relationExpr.split("[=]{3,}");
         }
         else {
             relationship.usingLineStyle(Styles.LineStyle.Solid);
-            leftAndRight = relationExpr.split("\\-");
+            leftAndRight = relationExpr.split("[\\-]+");
         }
 
         if(leftAndRight.length>1) {
@@ -145,7 +155,7 @@ public class YumlParser {
     }
 
     private static  void parseStyles(Map<String, String> styles, String inlinedStyles) {
-        String[] keyValues = inlinedStyles.split(",");
+        String[] keyValues = inlinedStyles.split("[,;]");
         for(String keyValue : keyValues) {
             String[] kv = keyValue.split(":");
             if(kv.length>1)

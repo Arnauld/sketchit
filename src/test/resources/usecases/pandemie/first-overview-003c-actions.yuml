@@ -1,0 +1,2 @@
+[DirectFlight]->1[PlayerCard]
+[DirectFlight]...<<constraint>>[note: destination==card.city]

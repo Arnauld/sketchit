@@ -4,14 +4,14 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import sketchit.domain.klazz.Repository;
-import sketchit.dot.ClassDiagramGenerator;
+import sketchit.domain.state.Repository;
+import sketchit.dot.StateDiagramGenerator;
+import sketchit.parser.RepositoryStateDiagramParserHandlerAdapter;
+import sketchit.parser.StateDiagramParser;
 import sketchit.testutil.LabeledParameterized;
 import sketchit.transformer.SVGConverter;
 import sketchit.transformer.SVGTransformer;
 import sketchit.util.ProcessPipeline;
-import sketchit.yuml.RepositoryYumlParserHandlerAdapter;
-import sketchit.yuml.YumlParser;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -35,7 +35,7 @@ import java.util.Properties;
  * @author <a href="http://twitter.com/aloyer">@aloyer</a>
  */
 @RunWith(LabeledParameterized.class)
-public class UsecaseTest {
+public class StateUsecaseTest {
 
     private static Properties properties;
 
@@ -78,47 +78,19 @@ public class UsecaseTest {
     @Parameterized.Parameters
     public static List<Object[]> values () {
         return Arrays.asList(
-                o("case00", "TD", "Class"),
-                o("case00a1", "TD", "Note & Background in hexa"),
-                o("case00a2", "TD", "Note & Background using html named color"),
-                o("case00b", "LR", "Association"),
-                o("case00d", "LR", "Dashed"),
-                o("case00e", "LR", "Dotted"),
-                o("case00f", "LR", "Bold"),
-                o("case00g", "LR", "Directional"),
-                o("case00h", "LR", "Aggregation"),
-                o("case00i", "LR", "Composition"),
-                o("case00j", "TD", "Inheritance"),
-                o("case01", "TD", "Long note text"),
-                o("case02a", "TD", "Class with attributes"),
-                o("case02", "TD", "Class with Details (TD)"),
-                o("case02", "DT", "Class with Details (DT)"),
-                o("case02", "LR", "Class with Details (LR)"),
-                o("case02", "RL", "Class with Details (RL)"),
-                o("case03", "TD", "Stereotype"),
-                o("case03b", "TD", "Stereotypes"),
-                o("case04", "LR", "Dependencies (Stereotype dans la relation)"),
-                o("case05", "LR", "InterfaceInheritance"),
-                o("case06", "LR", "Inheritance"),
-                o("case07", "LR", "Notes"),
-                o("case09", "LR", "Aggregation"),
-                o("case10", "LR", "utf8 & backgroung"),
-                o("case11", "LR", "DirectionalAssociation"),
-                o("case12", "LR", "Cardinality"),
-                o("case13", "LR", "SimpleAssociation"),
-                o("case14", "LR", "SimpleCase"),
-                o("case20", "TD", "SomethingMeaty")
+                o("case04", "TD", "Basic"),
+                o("case04", "LR", "Basic")
         );
     }
 
-    private YumlParser parser;
-    private RepositoryYumlParserHandlerAdapter yumlParserHandler;
-    private ClassDiagramGenerator classDiagramGenerator;
+    private StateDiagramParser parser;
+    private RepositoryStateDiagramParserHandlerAdapter stateParserHandler;
+    private StateDiagramGenerator stateDiagramGenerator;
     private final String direction;
     private final String description;
     private final String resourcePath;
 
-    public UsecaseTest(String resourcePath, String direction, String description) {
+    public StateUsecaseTest(String resourcePath, String direction, String description) {
         this.resourcePath = resourcePath;
         this.direction = direction;
         this.description = description;
@@ -126,10 +98,10 @@ public class UsecaseTest {
 
     @Before
     public void setUp() {
-        parser = new YumlParser();
+        parser = new StateDiagramParser();
         Repository repository = new Repository();
-        yumlParserHandler = new RepositoryYumlParserHandlerAdapter(repository);
-        classDiagramGenerator = new ClassDiagramGenerator(repository).usingRankDir(direction);
+        stateParserHandler = new RepositoryStateDiagramParserHandlerAdapter(repository);
+        stateDiagramGenerator = new StateDiagramGenerator(repository).usingRankDir(direction);
     }
 
     @Test
@@ -140,9 +112,9 @@ public class UsecaseTest {
 
     private void process(String resourcePath, String yuml) throws Exception
     {
-        classDiagramGenerator.usingFontName("jd");
+        stateDiagramGenerator.usingFontName("jd");
 
-        parser.parseExpressions(yuml, yumlParserHandler);
+        parser.parseExpressions(yuml, stateParserHandler);
 
         ByteArrayOutputStream dotOut = new ByteArrayOutputStream(1024);
 
@@ -150,14 +122,14 @@ public class UsecaseTest {
         // svg generation
         new ProcessPipeline().invoke(
                 asList("/usr/local/bin/dot", "-T" + ext),
-                classDiagramGenerator,
+                stateDiagramGenerator,
                 dotOut
         );
 
         File svgFile = new File(getOutputDir(), resourcePath + "-" + direction + "." + ext);
         OutputStream transformOut = new FileOutputStream(svgFile);
         try {
-            System.out.println("UsecaseTest.process\n " + new String(dotOut.toByteArray(), "utf8"));
+            System.out.println("StateUsecaseTest.process\n " + new String(dotOut.toByteArray(), "utf8"));
             SVGTransformer transformer = new SVGTransformer();
             transformer.transform(new ByteArrayInputStream(dotOut.toByteArray()), transformOut);
         }
@@ -173,7 +145,7 @@ public class UsecaseTest {
     }
 
     private static File getOutputDir() {
-        File file = new File(properties.getProperty("usecase.outputdir"));
+        File file = new File(properties.getProperty("usecase.outputdir") + "/state");
         if (!file.mkdirs() && !file.exists()) {
             throw new RuntimeException("Fail to create output directory at " + file);
         }
@@ -181,11 +153,11 @@ public class UsecaseTest {
     }
 
     private static InputStream openResourceStream(String resourcePath) {
-        return UsecaseTest.class.getResourceAsStream(resourcePath);
+        return StateUsecaseTest.class.getResourceAsStream(resourcePath);
     }
 
     private static String resourceContent(String resourcePath) throws IOException {
-        String completePath = "/usecases/" + resourcePath + ".yuml";
+        String completePath = "/usecases/state/" + resourcePath + ".state";
         InputStream stream = openResourceStream(completePath);
         assertThat(stream).describedAs("Resource at " + completePath).isNotNull();
 

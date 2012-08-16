@@ -1,0 +1,4 @@
+[Team]<>-*[Member]
+[Member]-1[<<enum>> Role]
+[Member]...[note: two members cannot have the same role; ∀(m1,m2) ∈ Team m1≠m2 ⇒ m1.role≠m2.role]
+[Role|Dispatcher;Operations Expert;Scientist;Medic;Researcher]

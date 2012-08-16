@@ -10,6 +10,7 @@ public class NoteElement extends Element<NoteElement> {
 
     public NoteElement(CharSequence text) {
         this.text = text;
+        System.out.println("NoteElement.NoteElement(" + text + ")");
     }
 
     public CharSequence getText() {
