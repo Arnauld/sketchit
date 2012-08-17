@@ -302,6 +302,25 @@ public class YumlParserTest {
     }
 
     @Test
+    public void parseRelation_withMeta() {
+        Relationship relationship = parser.parseRelation(ID_1, ID_2, "-.- <<uses>>{color:red;length:2} >");
+        assertThat(relationship).isNotNull();
+
+        assertThat(relationship.getLineStyle()).isEqualTo(Dashed);
+
+        Map<String,String> styles = relationship.getStyles();
+        assertThat(styles).contains(entry("color", "red"), entry("length", "2"));
+
+        Relationship.EndPoint leftEndPoint = relationship.leftEndPoint();
+        assertThat(leftEndPoint.getLabel()).isNullOrEmpty();
+        assertThat(leftEndPoint.getDecoration()).isEqualTo(None);
+
+        Relationship.EndPoint rightEndPoint = relationship.rightEndPoint();
+        assertThat(rightEndPoint.getLabel()).isEqualTo("<<uses>>");
+        assertThat(rightEndPoint.getDecoration()).isEqualTo(Arrow);
+    }
+
+    @Test
     public void parseExpression_case1() {
         YumlParserListenerCollector handler = new YumlParserListenerCollector();
         parser.parseExpression("[HttpContext]uses -.->[Response]", handler);

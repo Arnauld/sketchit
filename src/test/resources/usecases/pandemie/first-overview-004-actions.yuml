@@ -1,0 +1,8 @@
+[Action]^-[BasicAction]
+[Action]^-[SpecialAction]
+[BasicAction]^-[MoveAction]
+[BasicAction]^-[Pass]
+[MoveAction|+invoker:Member;+target:Member;+destination:City]
+[MoveAction]->1[MoveType]
+[MoveType{rank:A}]...[note: #isSatisfiedBy(a): ( invoker==target\n  || (invoker.role==Dispatcher&&target.accepts(a)) )\n&& ( distance(target.city, destination)==1\n  || invoker.hand.contains(destination.city) … {rank:A}]
+[<<enum>>MoveType|Drive;DirectFlight;ShuttleFlight;DispatcherMove;Pass|+isSatisfiedBy(MoveAction)]

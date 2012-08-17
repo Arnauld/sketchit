@@ -1,0 +1,1 @@
+[MoveService|+listAllPossibleMovesFor(member:Member):List<MoveProposal>]...> <<uses>>[MoveProposal|+MoveType;destination:City]

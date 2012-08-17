@@ -71,6 +71,8 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("digraph G {");
         out.println("    ranksep = " + repository.meta("rankSep", ""+rankSep));
         out.println("    rankdir = " + repository.meta("direction", ""+direction));
+        if(repository.hasMeta("nodesep"))
+        out.println("    nodesep = " + repository.meta("nodesep"));
     }
 
     private void generateFooter(PrintStream out) {
@@ -128,6 +130,9 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("       labeldistance = " + edgeLabelDistance);
         out.println("            fontsize = " + edgeFontSize);
         out.println("            fontname = \""+ fontName + "\"");
+        if(relationship.hasStyle("minlen")) {
+        out.println("              minlen = "+ relationship.getStyle("minlen"));
+        }
         out.println("    ]");
         out.println("    N" + id2Int(relationship.leftEndPoint()) + " -> N" + id2Int(relationship.rightEndPoint()));
     }
@@ -267,11 +272,13 @@ public class ClassDiagramGenerator implements StreamWriter {
 
     private String formatNoteElementLabel(NoteElement element) {
         String noteText = ensureTextIsValid(element.getText().toString());
+        // does the note provides its own wrap
+        if(noteText.contains("\\n"))
+            return noteText;
         return wrap(noteText, noteWrapLength, "\\n", false);
     }
 
     private static String ensureTextIsValid(String text) {
-        System.out.println("ClassDiagramGenerator.ensureTextIsValid(" + text + ")");
         return text.replaceAll("([<>])", "\\\\$1");
     }
 

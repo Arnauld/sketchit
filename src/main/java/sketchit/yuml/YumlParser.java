@@ -94,6 +94,14 @@ public class YumlParser {
     public Relationship parseRelation(Id leftId, Id rightId, String relationExpr) {
         Relationship relationship = new Relationship(leftId, rightId);
 
+        Map<String,String> styles = new HashMap<String, String>();
+        Matcher matcher = META.matcher(relationExpr);
+        if(matcher.find()) {
+            parseStyles(styles, matcher.group(2));
+            relationExpr = matcher.replaceFirst("");
+        }
+        relationship.usingStyles(styles);
+
         String[] leftAndRight;
         if(relationExpr.contains("-.-")) {
             relationship.usingLineStyle(Styles.LineStyle.Dashed);

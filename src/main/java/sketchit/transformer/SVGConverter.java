@@ -54,6 +54,14 @@ public class SVGConverter {
         }
     }
 
+    private static final float KEY_PIXEL_UNIT_TO_MILLIMETER = 0.2645833f;
+    private float keyPixelUnitToMillimeterFactor = 1.0f;
+
+    public SVGConverter usingKeyPixelUnitToMillimeterFactor(float keyPixelUnitToMillimeterFactor) {
+        this.keyPixelUnitToMillimeterFactor = keyPixelUnitToMillimeterFactor;
+        return this;
+    }
+
     public void svg2pngUsingBatik(InputStream svgIn, OutputStream pngOut) throws ConverterException {
 
         TranscoderInput input = new TranscoderInput(svgIn);
@@ -61,7 +69,8 @@ public class SVGConverter {
 
         // Save the image.
         PNGTranscoder transcoder = new PNGTranscoder();
-        transcoder.addTranscodingHint(ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, 0.2645833f);
+        transcoder.addTranscodingHint(ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER,
+                KEY_PIXEL_UNIT_TO_MILLIMETER / keyPixelUnitToMillimeterFactor);
         try {
             transcoder.transcode(input, output);
         }

@@ -88,8 +88,11 @@ public class PandemieClassUsecaseTest {
                 ,o("first-overview-003c-actions", "TD", "003c")
                 ,o("first-overview-003d-actions", "TD", "003d")
                 ,o("first-overview-003e-actions", "LR", "003e")
-                ,o("first-overview-003f-actions", "LR", "003f")
+                ,o("first-overview-003f-actions", "TD", "003f")
                 ,o("first-overview-003g-actions", "LR", "003g")
+                ,o("first-overview-004-actions", "TD", "004")
+                ,o("first-overview-004b-actions", "TD", "004b")
+                ,o("first-overview-010-services", "LR", "010")
         );
     }
 
@@ -139,7 +142,6 @@ public class PandemieClassUsecaseTest {
         File svgFile = new File(getOutputDir(), resourcePath + "-" + direction + "." + ext);
         OutputStream transformOut = new FileOutputStream(svgFile);
         try {
-            System.out.println("PandemieClassUsecaseTest.process\n " + new String(dotOut.toByteArray(), "utf8"));
             SVGTransformer transformer = new SVGTransformer();
             transformer.transform(new ByteArrayInputStream(dotOut.toByteArray()), transformOut);
         }
@@ -149,6 +151,7 @@ public class PandemieClassUsecaseTest {
 
         File pngFile = new File(getOutputDir(), resourcePath + "-" + direction + ".png");
         new SVGConverter()
+                .usingKeyPixelUnitToMillimeterFactor(0.85f)
                 .svg2png(svgFile, pngFile, false);
     }
 

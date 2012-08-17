@@ -3,6 +3,9 @@ package sketchit.domain.klazz;
 import sketchit.domain.Id;
 import sketchit.domain.Styles;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
@@ -10,6 +13,7 @@ public class Relationship {
 
     private final EndPoint leftEndPoint;
     private final EndPoint rightEndPoint;
+    private Map<String, String> styles;
     private Id id;
     private Styles.LineStyle lineStyle = Styles.LineStyle.Solid;
 
@@ -27,9 +31,14 @@ public class Relationship {
         return this;
     }
 
-
     public Relationship usingLineStyle(Styles.LineStyle lineStyle) {
         this.lineStyle = lineStyle;
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Relationship usingStyles(Map<String, String> styles) {
+        getStyles().putAll(styles);
         return this;
     }
 
@@ -43,6 +52,23 @@ public class Relationship {
 
     public Styles.LineStyle getLineStyle() {
         return lineStyle;
+    }
+
+    public Map<String, String> getStyles() {
+        if (styles == null) {
+            styles = new HashMap<String, String>();
+        }
+        return styles;
+    }
+
+    public String getStyle(String key) {
+        if(styles!=null)
+            return styles.get(key);
+        return null;
+    }
+
+    public boolean hasStyle(String key) {
+        return styles!=null && styles.containsKey(key);
     }
 
     public static class EndPoint {

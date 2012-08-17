@@ -19,6 +19,8 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.List;
@@ -124,6 +126,9 @@ public class SVGTransformer {
         return defs;
     }
 
+    private DecimalFormat df = new DecimalFormat("#####.##", new DecimalFormatSymbols(Locale.US));
+
+
     private void increaseSVGSize(Document document) {
         Element root = document.getDocumentElement();
 
@@ -134,16 +139,14 @@ public class SVGTransformer {
         double y1 = Double.parseDouble(viewCoords[1]);
         double x2 = Double.parseDouble(viewCoords[2]);
         double y2 = Double.parseDouble(viewCoords[3]);
-        double dx = 0.2 * (x2 - x1);
-        double dy = 0.2 * (y2 - y1);
-        NumberFormat nf = NumberFormat.getInstance(Locale.US);
-        nf.setMaximumFractionDigits(3);
+        double dx = 0.05 * (x2 - x1);
+        double dy = 0.05 * (y2 - y1);
 
         String newViewBox =
-                nf.format(x1 - dx) + " " + nf.format(y1 - dy) + " " + nf.format(x2 + 2*dx) + " " + nf.format(y2 + 2*dy);
+                df.format(x1 - dx) + " " + df.format(y1 - dy) + " " + df.format(x2 + 2*dx) + " " + df.format(y2 + 2*dy);
         root.setAttribute("viewBox", newViewBox);
-        root.setAttribute("width", String.valueOf((int)(x2-x1 + dx+2*dx)) + "pt");
-        root.setAttribute("height", String.valueOf((int)(y2-y1 + dy+2*dy)) + "pt");
+        root.setAttribute("width", String.valueOf((int)(x2-x1 + dx+2*dx + 1)) + "pt");
+        root.setAttribute("height", String.valueOf((int)(y2-y1 + dy+2*dy + 1)) + "pt");
     }
 
     private Element createShadowFilter(Document document) {

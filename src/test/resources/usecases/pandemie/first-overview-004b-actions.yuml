@@ -1,0 +1,6 @@
+[Action]^-[BasicAction]
+[Action]^-[SpecialAction]
+[SpecialAction]^-[BuildResearchCenter]
+[SpecialAction]^-[DiscoverCure]
+[SpecialAction]^-[ShareKnowledge]
+[SpecialAction]^-[TreatDisease]-> <<side effect>>[DiseaseEradicated|+eradicated:Disease]
