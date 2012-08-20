@@ -3,4 +3,7 @@
 [CityGraph]->*[Road{rank:A}]
 [Road]->left{minlen:4}[CityId]
 [Road]->right{minlen:4}[CityId]
-[CityGraph]...[note: World, Board or CityGraph...{rank:B}]
+[CityGraph]...[note: World, Board or CityGraph... Even if it is a complex one, the graph remains a ValueObject!{rank:B}]
+[CityGraph{bg:#87cefa}]
+[Road{bg:#87cefa}]
+[CityId{bg:#87cefa}]
