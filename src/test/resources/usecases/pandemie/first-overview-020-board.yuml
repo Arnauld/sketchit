@@ -1,0 +1,6 @@
+@{rankSep:1, direction:TD}
+[CityGraph{rank:B}]->*[CityId{rank:A}]
+[CityGraph]->*[Road{rank:A}]
+[Road]->left{minlen:4}[CityId]
+[Road]->right{minlen:4}[CityId]
+[CityGraph]...[note: World, Board or CityGraph...{rank:B}]

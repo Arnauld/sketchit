@@ -217,8 +217,10 @@ public class SVGTransformer {
         List<Point2D> points = Point2D.parsePoints(element.getAttribute("points"));
 
         for(int i=0, n=points.size()-1; i<n; i++) {
-            Point2D pn0 = points.get(i);
+            Point2D pn0Orig = points.get(i);
+            Point2D pn0 = pn0Orig;
             Point2D pn1 = points.get(i+1);
+            double hMax = 0.02*pn0Orig.lengthTo(pn1);
             modified.append(pn0.asString()).append(' ');
 
             double distance;
@@ -226,8 +228,14 @@ public class SVGTransformer {
                 double radius = distance * 0.02;
                 if(radius>5)
                     radius = 5;
-                Point2D interm = pn0.split(pn1, distance*random.nextDouble()).angularMove(
+                Point2D interm;
+
+                // prevent a too big distorsion by cumulating displacement in the same direction
+                do {
+                    interm = pn0.split(pn1, distance*random.nextDouble()).angularMove(
                         radius, 2 * Math.PI * random.nextDouble());
+                }
+                while(pointToLineDistance(pn0Orig, pn1, interm)>hMax);
                 modified.append(interm.asString()).append(' ');
                 pn0 = interm;
             }
@@ -236,6 +244,13 @@ public class SVGTransformer {
         // append last point
         modified.append(points.get(points.size() - 1).asString());
         element.setAttribute("points", modified.toString());
+    }
+
+    public double pointToLineDistance(Point2D A, Point2D B, Point2D P) {
+        double xAB = (B.x-A.x);
+        double yAB = (B.y-A.y);
+        double normalLength = Math.sqrt(xAB*xAB+yAB*yAB);
+        return Math.abs((P.x-A.x)*yAB-(P.y-A.y)*xAB)/normalLength;
     }
 
 }

@@ -10,10 +10,12 @@ import sketchit.testutil.LabeledParameterized;
 import sketchit.transformer.SVGConverter;
 import sketchit.transformer.SVGTransformer;
 import sketchit.util.ProcessPipeline;
+import sketchit.util.StreamWriter;
 import sketchit.yuml.RepositoryYumlParserHandlerAdapter;
 import sketchit.yuml.YumlParser;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -93,6 +95,8 @@ public class PandemieClassUsecaseTest {
                 ,o("first-overview-004-actions", "TD", "004")
                 ,o("first-overview-004b-actions", "TD", "004b")
                 ,o("first-overview-010-services", "LR", "010")
+                ,o("first-overview-020-board", "LR", "020")
+                ,o("first-overview-021-city", "TD", "021")
         );
     }
 
@@ -135,7 +139,13 @@ public class PandemieClassUsecaseTest {
         // svg generation
         new ProcessPipeline().invoke(
                 asList("/usr/local/bin/dot", "-T" + ext),
-                classDiagramGenerator,
+                new StreamWriter() {
+                    @Override
+                    public void writeTo(OutputStream outputStream) throws IOException {
+                        TeeOutputStream tee = new TeeOutputStream(outputStream, System.out);
+                        classDiagramGenerator.writeTo(tee);
+                    }
+                },
                 dotOut
         );
 

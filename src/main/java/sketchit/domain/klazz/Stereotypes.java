@@ -67,4 +67,12 @@ public class Stereotypes {
     public static String decryptStereotypeDelimiters(String text) {
         return Pattern.compile("(\ufd3e([^\ufd3f]+)\ufd3f)").matcher(text).replaceAll("<<$2>>");
     }
+
+    public static String toSignature(List<String> stereotypes) {
+        StringBuilder builder = new StringBuilder();
+        for(String stereotype: stereotypes) {
+            builder.append("<<").append(stereotype).append(">>");
+        }
+        return builder.toString();
+    }
 }

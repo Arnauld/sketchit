@@ -1,0 +1,8 @@
+[InfectionCard]->apply on;1[CityId]
+[City]<>-*;infected by[Cube]
+[City]->1;id[CityId|+Algiers;+Atlanta;+Baghdad;+Bangkok;...]
+
+[<<card>> InfectionCard{bg:thistle;rank:A}]
+[<<ValueObject>> Cube{bg:#87cefa}]
+[<<ValueObject>><<enum>> CityId{bg:#87cefa}]
+[City{rank:A}]

@@ -1,5 +1,8 @@
 package sketchit.domain.klazz;
 
+import static sketchit.domain.klazz.Stereotypes.discardStereotypes;
+import static sketchit.domain.klazz.Stereotypes.extractStereotypes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +11,14 @@ import java.util.List;
  *
  */
 public class ClassElement extends Element<ClassElement> {
-    private final CharSequence nameSignature;
+    private final String className;
+    private final List<String> stereotypes;
     private final List<String> attributes;
     private final List<String> methods;
 
     public ClassElement(CharSequence nameSignature, List<String> attributes, List<String> methods) {
-        this.nameSignature = nameSignature;
+        this.className = discardStereotypes(nameSignature);
+        this.stereotypes = extractStereotypes(nameSignature);
         this.attributes = newArrayList(attributes);
         this.methods = newArrayList(methods);
     }
@@ -28,7 +33,10 @@ public class ClassElement extends Element<ClassElement> {
     }
 
     public CharSequence getNameSignature() {
-        return nameSignature;
+        String stereotypes = Stereotypes.toSignature(this.stereotypes);
+        if(stereotypes!=null && !stereotypes.isEmpty())
+            return stereotypes + " " + className;
+        return className;
     }
 
     public List<String> getAttributes() {
@@ -40,11 +48,11 @@ public class ClassElement extends Element<ClassElement> {
     }
 
     public String getClassName() {
-        return Stereotypes.discardStereotypes(getNameSignature());
+        return className;
     }
 
     public List<String> getStereotypes() {
-        return Stereotypes.extractStereotypes(getNameSignature());
+        return stereotypes;
     }
 
     @Override
@@ -61,6 +69,7 @@ public class ClassElement extends Element<ClassElement> {
         completeStylesWith(element);
         ClassElement other = element.adaptTo(ClassElement.class);
         if (other != null) {
+            addMissings(other.getStereotypes(), stereotypes);
             addMissings(other.getAttributes(), attributes);
             addMissings(other.getMethods(), methods);
         }

@@ -1,1 +1,1 @@
-[MoveService|+listAllPossibleMovesFor(member:Member):List<MoveProposal>]...> <<uses>>[MoveProposal|+MoveType;destination:City]
+[<<service>>MoveService|+listAllPossibleMovesFor(member:Member):List<MoveProposal>{bg:coral}]...> <<uses>>[MoveProposal|+MoveType;destination:City]

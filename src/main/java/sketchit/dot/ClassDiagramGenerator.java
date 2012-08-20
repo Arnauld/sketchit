@@ -133,6 +133,9 @@ public class ClassDiagramGenerator implements StreamWriter {
         if(relationship.hasStyle("minlen")) {
         out.println("              minlen = "+ relationship.getStyle("minlen"));
         }
+        if(relationship.hasStyle("len")) {
+        out.println("                 len = "+ relationship.getStyle("len"));
+        }
         out.println("    ]");
         out.println("    N" + id2Int(relationship.leftEndPoint()) + " -> N" + id2Int(relationship.rightEndPoint()));
     }
