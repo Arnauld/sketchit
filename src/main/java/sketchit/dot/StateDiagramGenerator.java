@@ -102,7 +102,7 @@ public class StateDiagramGenerator implements StreamWriter {
         out.println("       labeldistance = " + edgeLabelDistance);
         out.println("            fontsize = " + edgeFontSize);
         out.println("            fontname = \""+ fontName + "\"");
-        out.println("    ]");
+        out.println("    ];");
         out.println("    S" + id2Int(transition.leftEndPoint()) + " -> S" + id2Int(transition.rightEndPoint()));
     }
 
@@ -114,7 +114,7 @@ public class StateDiagramGenerator implements StreamWriter {
         out.println("    node [");
         out.println("           shape = \"circle\"");
         out.println("          height = 0.50");
-        out.println("          margin = 0.20,0.05");
+        out.println("          margin = \"0.20,0.05\"");
         out.println("           style = filled");
         out.println("       fillcolor = black");
         out.println("        fontname = \"" + fontName + "\"");
@@ -125,14 +125,14 @@ public class StateDiagramGenerator implements StreamWriter {
         out.println("            style = \"filled\"");
         out.println("        fillcolor = \"" + defaultString(state.getBackground(), "lightgrey") + "\"");
         out.println("         fontname = \"" + fontName + "\"");
-        out.println("    ]");
+        out.println("    ];");
     }
 
     private void generateStartState(PrintStream out, State state) {
         out.println("    node [");
         out.println("           shape = \"circle\"");
         out.println("          height = 0.50");
-        out.println("          margin = 0.20,0.05");
+        out.println("          margin = \"0.20,0.05\"");
         out.println("           style = filled");
         out.println("       fillcolor = black");
         out.println("    ] " + "S" + id2Int(state));
@@ -142,7 +142,7 @@ public class StateDiagramGenerator implements StreamWriter {
         out.println("    node [");
         out.println("           shape = \"doublecircle\"");
         out.println("          height = 0.50");
-        out.println("          margin = 0.20,0.05");
+        out.println("          margin = \"0.20,0.05\"");
         out.println("           style = filled");
         out.println("       fillcolor = black");
         out.println("    ] " + "S" + id2Int(state));

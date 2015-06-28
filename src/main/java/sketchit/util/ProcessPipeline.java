@@ -42,6 +42,8 @@ public class ProcessPipeline {
             t1.join();
             t2.join();
 
+            System.err.println("E> " + procError.toString());
+
             if(r!=0)
                 throw new IllegalArgumentException("Something got wrong: " + procError.toString());
         }

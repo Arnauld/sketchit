@@ -1,4 +1,21 @@
+# Getting started
 
+```dot
+[note: You can stick notes on diagrams too!{bg:cornsilk}]
+[Customer]<>1-orders 0..*>[Order{bg:#87cefa}]
+[Order]++*-*>[LineItem]
+[Order]-1>[DeliveryMethod{bg:thistle}]
+[Order]*-*>[Product{bg:#cd5c5c}]
+[Category{bg:moccasin}]<->[Product]
+[DeliveryMethod]^[National{bg:coral}]
+[DeliveryMethod]^[International{bg:#98fb98}]
+```
+
+is transformed into:
+
+![sketchit-rendered](doc/images/case20-TD.png)
+
+# Syntax
 
 Syntax for Class diagram is based on [yUML](http://yuml.me/diagram/class/draw) syntax
 

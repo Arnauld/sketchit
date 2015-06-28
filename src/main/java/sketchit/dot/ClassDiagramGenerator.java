@@ -136,7 +136,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         if(relationship.hasStyle("len")) {
         out.println("                 len = "+ relationship.getStyle("len"));
         }
-        out.println("    ]");
+        out.println("    ];");
         out.println("    N" + id2Int(relationship.leftEndPoint()) + " -> N" + id2Int(relationship.rightEndPoint()));
     }
 
@@ -194,8 +194,8 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("           shape = \"record\"");
         out.println("          height = 0.50");
         out.println("        fontsize = " + nodeFontSize);
-        out.println("          margin = 0.20,0.05");
-        out.println("    ]");
+        out.println("          margin = \"0.20,0.05\"");
+        out.println("    ];");
     }
 
     private void generateNodeDefForNote(PrintStream out) {
@@ -203,9 +203,9 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("           shape = \"note\"");
         out.println("          height = 0.50");
         out.println("        fontsize = " + noteFontSize);
-        out.println("          margin = 0.20,0.05");
+        out.println("          margin = \"0.20,0.05\"");
         out.println("      constraint = false");
-        out.println("    ]");
+        out.println("    ];");
     }
 
     //-------------------------------------------------------------------------
@@ -216,7 +216,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("            style = \"filled\"");
         out.println("        fillcolor = \"" + defaultString(element.getBackground(), "lightgrey") + "\"");
         out.println("         fontname = \"" + fontName + "\"");
-        out.println("    ]");
+        out.println("    ];");
     }
 
     private String formatClassElementLabel(ClassElement element) {
@@ -270,7 +270,7 @@ public class ClassDiagramGenerator implements StreamWriter {
         out.println("              style = \"filled\"");
         out.println("          fillcolor = \"" + defaultString(element.getBackground(), "cornsilk") + "\"");
         out.println("           fontname = \"" + fontName + "\"");
-        out.println("    ]");
+        out.println("    ];");
     }
 
     private String formatNoteElementLabel(NoteElement element) {
